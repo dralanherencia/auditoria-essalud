@@ -340,11 +340,14 @@ tbody tr:last-child td{border-bottom:none}
   <div class="page" id="page-registro">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:6px">
       <div class="page-title" style="margin:0">Nueva auditoría</div>
-      <button class="btn btn-print" onclick="imprimirActual()" id="btn-imprimir" style="display:none">Imprimir / PDF</button>
+      <div style="display:flex;gap:6px" id="btns-imprimir" style="display:none">
+        <button class="btn btn-print btn-sm" onclick="imprimirActual('CI')" id="btn-imp-ci" style="display:none">PDF Cons. Informado</button>
+        <button class="btn btn-print btn-sm" onclick="imprimirActual('CQ')" id="btn-imp-cq" style="display:none">PDF Centro Quirúrgico</button>
+      </div>
     </div>
 
     <div class="card">
-      <div class="card-title">Datos generales</div>
+      <div class="card-title">Datos generales — se comparten entre todos los formularios</div>
       <div class="form-grid">
         <div class="fg"><label>N° Historia Clínica *</label><input id="f-hc" type="text" placeholder="79728"></div>
         <div class="fg"><label>Fecha de atención *</label><input id="f-fecha" type="date"></div>
@@ -357,38 +360,59 @@ tbody tr:last-child td{border-bottom:none}
             <option>MEDICINA INTERNA</option><option>PEDIATRÍA</option>
           </select>
         </div>
-        <div class="fg"><label>Tipo de auditoría *</label>
-          <select id="f-tipo" onchange="renderItems()">
-            <option value="">Seleccionar...</option>
-            <option value="CI">Consentimiento Informado</option>
-            <option value="CQ">Centro Quirúrgico</option>
-          </select>
-        </div>
         <div class="fg"><label>Colegiatura del médico</label><input id="f-cole" type="text" placeholder="66076"></div>
         <div class="fg"><label>Diagnóstico (CIE-10)</label><input id="f-dx" type="text" placeholder="H26.2 — Catarata complicada"></div>
         <div class="fg"><label>N° Auditoría</label><input id="f-naud" type="text" placeholder="001-2026"></div>
         <div class="fg"><label>Miembros del comité</label><input id="f-comite" type="text" placeholder="Nombre del auditor"></div>
+        <div class="fg" style="grid-column:1/-1">
+          <label>Formularios a auditar</label>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:2px">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:13px">
+              <input type="checkbox" id="chk-ci" checked onchange="renderFormularios()" style="accent-color:var(--azul);width:15px;height:15px">
+              Consentimiento Informado
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:13px">
+              <input type="checkbox" id="chk-cq" checked onchange="renderFormularios()" style="accent-color:var(--azul);width:15px;height:15px">
+              Centro Quirúrgico
+            </label>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Score en vivo -->
-    <div class="score-live" id="score-live" style="display:none">
-      <div>
-        <div class="lbl">Puntaje actual</div>
-        <div style="display:flex;align-items:baseline;gap:6px">
-          <div class="num" id="score-num">0</div>
-          <div style="font-size:13px;opacity:.8">/ <span id="score-max">100</span></div>
+    <!-- Scores en vivo -->
+    <div id="scores-container" style="display:none">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.75rem;margin-bottom:.75rem" id="scores-grid">
+        <div class="score-live" id="score-ci" style="display:none">
+          <div style="flex:1">
+            <div class="lbl">Cons. Informado</div>
+            <div style="display:flex;align-items:baseline;gap:6px">
+              <div class="num" id="score-num-ci">0</div>
+              <div style="font-size:12px;opacity:.8">/ <span id="score-max-ci">100</span></div>
+            </div>
+            <div class="score-bar"><div class="score-bar-fill" id="score-bar-ci" style="width:0%;background:#70AD47"></div></div>
+          </div>
+          <div id="score-badge-ci" style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,.15)">—</div>
         </div>
-        <div class="score-bar"><div class="score-bar-fill" id="score-bar" style="width:0%;background:#70AD47"></div></div>
+        <div class="score-live" id="score-cq" style="display:none">
+          <div style="flex:1">
+            <div class="lbl">Centro Quirúrgico</div>
+            <div style="display:flex;align-items:baseline;gap:6px">
+              <div class="num" id="score-num-cq">0</div>
+              <div style="font-size:12px;opacity:.8">/ <span id="score-max-cq">100</span></div>
+            </div>
+            <div class="score-bar"><div class="score-bar-fill" id="score-bar-cq" style="width:0%;background:#70AD47"></div></div>
+          </div>
+          <div id="score-badge-cq" style="font-size:12px;font-weight:600;padding:4px 10px;border-radius:8px;background:rgba(255,255,255,.15)">—</div>
+        </div>
       </div>
-      <div id="score-badge" style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:8px;background:rgba(255,255,255,.15)">—</div>
     </div>
 
     <div id="items-container"></div>
 
     <div class="btn-row">
       <button class="btn btn-s" onclick="limpiar()">Limpiar</button>
-      <button class="btn btn-p" onclick="guardar()">Guardar auditoría</button>
+      <button class="btn btn-p" onclick="guardar()" id="btn-guardar" disabled>Guardar auditorías</button>
     </div>
   </div>
 
@@ -659,106 +683,165 @@ function loadDashboard(){
 }
 
 // ── REGISTRO ──────────────────────────────────────────────────────────────────
-function renderItems(){
-  const tipo=document.getElementById('f-tipo').value
-  const cont=document.getElementById('items-container')
-  document.getElementById('score-live').style.display=tipo?'flex':'none'
-  document.getElementById('btn-imprimir').style.display='none'
-  if(!tipo){cont.innerHTML='';itemState={};return}
-  const items=tipo==='CI'?ITEMS_CI:ITEMS_CQ
-  itemState={}
-  items.forEach(it=>itemState[it.id]=it.na?'NA':'C')
-  const secs=[...new Set(items.map(x=>x.sec))]
-  cont.innerHTML=secs.map(sec=>`
-    <div class="sec-header">${sec}</div>
-    <div class="items-list">
-      ${items.filter(it=>it.sec===sec).map(it=>`
-        <div class="item-row conforme" id="row-${it.id}">
-          <span class="item-label">${it.label}</span>
-          <span class="item-pts">${it.peso}pts</span>
-          <div class="item-controls">
-            <button class="btn-c c active" onclick="setItem('${it.id}','C')">C</button>
-            <button class="btn-c nc" onclick="setItem('${it.id}','NC')">NC</button>
-            ${it.na?`<button class="btn-c na ${it.na?'active':''}" onclick="setItem('${it.id}','NA')">NA</button>`:''}
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `).join('')
-  updateScore()
+let itemStatCI = {}, itemStatCQ = {}
+
+function renderFormularios(){
+  const ci = document.getElementById('chk-ci').checked
+  const cq = document.getElementById('chk-cq').checked
+  document.getElementById('btn-guardar').disabled = !ci && !cq
+  document.getElementById('scores-container').style.display = (ci||cq)?'block':'none'
+  document.getElementById('score-ci').style.display = ci?'flex':'none'
+  document.getElementById('score-cq').style.display = cq?'flex':'none'
+
+  const cont = document.getElementById('items-container')
+  cont.innerHTML = ''
+  itemStatCI = {}; itemStatCQ = {}
+
+  if(ci) renderItemsForTipo('CI')
+  if(cq) renderItemsForTipo('CQ')
 }
 
-function setItem(id,val){
-  itemState[id]=val
-  const row=document.getElementById('row-'+id)
-  row.className='item-row'+(val==='C'?' conforme':val==='NC'?' noconforme':'')
-  const btns=row.querySelectorAll('.btn-c')
-  btns.forEach(b=>{
-    b.classList.remove('active')
-    if((val==='C'&&b.classList.contains('c'))||(val==='NC'&&b.classList.contains('nc'))||(val==='NA'&&b.classList.contains('na')))b.classList.add('active')
+function renderItemsForTipo(tipo){
+  const items = tipo==='CI' ? ITEMS_CI : ITEMS_CQ
+  const state = tipo==='CI' ? itemStatCI : itemStatCQ
+  items.forEach(it => state[it.id] = it.na ? 'NA' : 'C')
+
+  const cont = document.getElementById('items-container')
+  const secs = [...new Set(items.map(x=>x.sec))]
+
+  // Título del bloque
+  const blkTitle = document.createElement('div')
+  blkTitle.style.cssText = 'background:var(--azul);color:#fff;padding:7px 12px;font-size:12px;font-weight:600;border-radius:8px;margin:.75rem 0 .4rem;letter-spacing:.3px'
+  blkTitle.textContent = tipo==='CI' ? 'CONSENTIMIENTO INFORMADO' : 'CENTRO QUIRÚRGICO'
+  cont.appendChild(blkTitle)
+
+  secs.forEach(sec => {
+    const sh = document.createElement('div')
+    sh.className = 'sec-header'
+    sh.textContent = sec
+    cont.appendChild(sh)
+
+    const list = document.createElement('div')
+    list.className = 'items-list'
+    items.filter(it=>it.sec===sec).forEach(it=>{
+      const row = document.createElement('div')
+      row.className = 'item-row conforme'
+      row.id = `row-${tipo}-${it.id}`
+      const naBtn = it.na ? `<button class="btn-c na" onclick="setItem('${tipo}','${it.id}','NA')">NA</button>` : ''
+      row.innerHTML = `
+        <span class="item-label">${it.label}</span>
+        <span class="item-pts">${it.peso}pts</span>
+        <div class="item-controls">
+          <button class="btn-c c active" onclick="setItem('${tipo}','${it.id}','C')">C</button>
+          <button class="btn-c nc" onclick="setItem('${tipo}','${it.id}','NC')">NC</button>
+          ${naBtn}
+        </div>`
+      list.appendChild(row)
+    })
+    cont.appendChild(list)
   })
-  updateScore()
+  updateScore(tipo)
 }
 
-function updateScore(){
-  const tipo=document.getElementById('f-tipo').value
-  const items=tipo==='CI'?ITEMS_CI:ITEMS_CQ
-  const maxPts=items.filter(it=>itemState[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
-  const obtPts=items.filter(it=>itemState[it.id]==='C').reduce((a,b)=>a+b.peso,0)
-  const pct=maxPts>0?Math.round(obtPts/maxPts*100):0
-  const calif=calcCalif(pct)
-  document.getElementById('score-num').textContent=Math.round(obtPts)
-  document.getElementById('score-max').textContent=Math.round(maxPts)
-  const bar=document.getElementById('score-bar')
-  bar.style.width=pct+'%'
-  bar.style.background=calif==='S'?'#70AD47':calif==='P'?'#FFD966':'#FF4C4C'
-  const sb2=document.getElementById('score-badge')
-  sb2.textContent=califLabel(calif)+' ('+pct+'%)'
-  sb2.style.background=calif==='S'?'rgba(112,173,71,.25)':calif==='P'?'rgba(255,217,102,.25)':'rgba(255,76,76,.25)'
+function setItem(tipo, id, val){
+  const state = tipo==='CI' ? itemStatCI : itemStatCQ
+  state[id] = val
+  const row = document.getElementById(`row-${tipo}-${id}`)
+  if(!row) return
+  row.className = 'item-row' + (val==='C'?' conforme':val==='NC'?' noconforme':'')
+  row.querySelectorAll('.btn-c').forEach(b=>{
+    b.classList.remove('active')
+    if((val==='C'&&b.classList.contains('c'))||(val==='NC'&&b.classList.contains('nc'))||(val==='NA'&&b.classList.contains('na')))
+      b.classList.add('active')
+  })
+  updateScore(tipo)
 }
+
+function updateScore(tipo){
+  const items = tipo==='CI' ? ITEMS_CI : ITEMS_CQ
+  const state = tipo==='CI' ? itemStatCI : itemStatCQ
+  const sfx = tipo.toLowerCase()
+  const maxPts = items.filter(it=>state[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
+  const obtPts = items.filter(it=>state[it.id]==='C').reduce((a,b)=>a+b.peso,0)
+  const pct = maxPts>0?Math.round(obtPts/maxPts*100):0
+  const calif = calcCalif(pct)
+  document.getElementById(`score-num-${sfx}`).textContent = Math.round(obtPts)
+  document.getElementById(`score-max-${sfx}`).textContent = Math.round(maxPts)
+  const bar = document.getElementById(`score-bar-${sfx}`)
+  bar.style.width = pct+'%'
+  bar.style.background = calif==='S'?'#70AD47':calif==='P'?'#FFD966':'#FF4C4C'
+  const bdg = document.getElementById(`score-badge-${sfx}`)
+  bdg.textContent = califLabel(calif)+' ('+pct+'%)'
+  bdg.style.background = calif==='S'?'rgba(112,173,71,.25)':calif==='P'?'rgba(255,217,102,.25)':'rgba(255,76,76,.25)'
+}
+
+// Legacy stub (no longer used but kept for safety)
+function renderItems(){ renderFormularios() }
 
 async function guardar(){
-  const hc=document.getElementById('f-hc').value.trim()
-  const fecha=document.getElementById('f-fecha').value
-  const servicio=document.getElementById('f-servicio').value
-  const tipo=document.getElementById('f-tipo').value
-  if(!hc||!fecha||!servicio||!tipo){toast('Completar: HC, fecha, servicio y tipo.');return}
-  const items=tipo==='CI'?ITEMS_CI:ITEMS_CQ
-  const maxPts=items.filter(it=>itemState[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
-  const obtPts=items.filter(it=>itemState[it.id]==='C').reduce((a,b)=>a+b.peso,0)
-  const puntaje=maxPts>0?Math.round(obtPts/maxPts*100):0
-  const row={
-    hc,fecha,servicio,tipo,puntaje,calif:calcCalif(puntaje),
-    cole:document.getElementById('f-cole').value.trim(),
-    dx:document.getElementById('f-dx').value.trim(),
-    naud:document.getElementById('f-naud').value.trim(),
-    comite:document.getElementById('f-comite').value.trim(),
-    mes:fecha.substring(0,7),
-    items:{...itemState},
-    auditor:currentUser.email,
-    user_id:currentUser.id
+  const hc = document.getElementById('f-hc').value.trim()
+  const fecha = document.getElementById('f-fecha').value
+  const servicio = document.getElementById('f-servicio').value
+  const ci = document.getElementById('chk-ci').checked
+  const cq = document.getElementById('chk-cq').checked
+  if(!hc||!fecha||!servicio){toast('Completar: HC, fecha y servicio.');return}
+  if(!ci&&!cq){toast('Seleccionar al menos un formulario.');return}
+
+  const shared = {
+    hc, fecha, servicio,
+    cole: document.getElementById('f-cole').value.trim(),
+    dx:   document.getElementById('f-dx').value.trim(),
+    naud: document.getElementById('f-naud').value.trim(),
+    comite: document.getElementById('f-comite').value.trim(),
+    mes: fecha.substring(0,7),
+    auditor: currentUser.email,
+    user_id: currentUser.id
   }
+
+  const rows = []
+  if(ci){
+    const items = ITEMS_CI
+    const maxPts = items.filter(it=>itemStatCI[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
+    const obtPts = items.filter(it=>itemStatCI[it.id]==='C').reduce((a,b)=>a+b.peso,0)
+    const puntaje = maxPts>0?Math.round(obtPts/maxPts*100):0
+    rows.push({...shared, tipo:'CI', puntaje, calif:calcCalif(puntaje), items:{...itemStatCI}})
+  }
+  if(cq){
+    const items = ITEMS_CQ
+    const maxPts = items.filter(it=>itemStatCQ[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
+    const obtPts = items.filter(it=>itemStatCQ[it.id]==='C').reduce((a,b)=>a+b.peso,0)
+    const puntaje = maxPts>0?Math.round(obtPts/maxPts*100):0
+    rows.push({...shared, tipo:'CQ', puntaje, calif:calcCalif(puntaje), items:{...itemStatCQ}})
+  }
+
   loading(true)
-  const{data,error}=await sb.from('auditorias').insert([row]).select()
+  const{data,error} = await sb.from('auditorias').insert(rows).select()
   loading(false)
   if(error){toast('Error: '+error.message);return}
-  allData.unshift(data[0])
+  data.forEach(d=>allData.unshift(d))
   populateMeses()
-  toast('Auditoría guardada · HC '+hc+' · '+puntaje+'/100')
-  document.getElementById('btn-imprimir').style.display='block'
-  window._lastSaved=data[0]
+  window._lastSaved = data
+  toast(`${data.length} auditoría(s) guardada(s) · HC ${hc}`)
+  document.getElementById('btn-imp-ci').style.display = ci?'inline-block':'none'
+  document.getElementById('btn-imp-cq').style.display = cq?'inline-block':'none'
+  loadDashboard()
 }
 
 function limpiar(){
   ['f-hc','f-cole','f-dx','f-naud','f-comite'].forEach(id=>document.getElementById(id).value='')
-  document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0]
-  document.getElementById('f-servicio').selectedIndex=0
-  document.getElementById('f-tipo').selectedIndex=0
-  document.getElementById('items-container').innerHTML=''
-  document.getElementById('score-live').style.display='none'
-  document.getElementById('btn-imprimir').style.display='none'
-  itemState={}
+  document.getElementById('f-fecha').value = new Date().toISOString().split('T')[0]
+  document.getElementById('f-servicio').selectedIndex = 0
+  document.getElementById('chk-ci').checked = true
+  document.getElementById('chk-cq').checked = true
+  document.getElementById('items-container').innerHTML = ''
+  document.getElementById('scores-container').style.display = 'none'
+  document.getElementById('score-ci').style.display = 'none'
+  document.getElementById('score-cq').style.display = 'none'
+  document.getElementById('btn-imp-ci').style.display = 'none'
+  document.getElementById('btn-imp-cq').style.display = 'none'
+  itemStatCI = {}; itemStatCQ = {}
 }
+
 
 // ── MATRIZ ────────────────────────────────────────────────────────────────────
 function loadMatriz(){
@@ -925,9 +1008,12 @@ function buildAnexo54(rec){
   </div>`
 }
 
-function imprimirActual(){
+function imprimirActual(tipo){
   if(!window._lastSaved){toast('Guarda la auditoría primero');return}
-  imprimirConRec(window._lastSaved)
+  const arr = Array.isArray(window._lastSaved) ? window._lastSaved : [window._lastSaved]
+  const rec = arr.find(r=>r.tipo===tipo)
+  if(!rec){toast('No se encontró el registro '+tipo);return}
+  imprimirConRec(rec)
 }
 
 function imprimirRegistro(id){
