@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditoría de Registros — EsSalud</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --azul:#003F87;--azul-m:#0070C0;--azul-c:#BDD7EE;
+  --verde:#70AD47;--amarillo:#FFD966;--rojo:#FF4C4C;
+  --verde-t:#2e6e0e;--amarillo-t:#7d5a00;--rojo-t:#8b1a1a;
+  --bg:#f5f7fa;--card:#fff;--text:#1a1a1a;--muted:#6b7280;
+  --border:#e5e7eb;--radius:10px
+}
+body{font-family:'Tahoma',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+
+/* AUTH */
+#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#003F87 0%,#0070C0 100%)}
+.auth-card{background:#fff;border-radius:16px;padding:2.5rem 2rem;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.auth-logo{text-align:center;margin-bottom:1.5rem}
+.auth-logo img{height:48px}
+.auth-logo h2{color:var(--azul);font-size:16px;font-weight:600;margin-top:.5rem}
+.auth-logo p{color:var(--muted);font-size:12px;margin-top:2px}
+.auth-card label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px;margin-top:12px}
+.auth-card input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'Tahoma',sans-serif;outline:none}
+.auth-card input:focus{border-color:var(--azul-m);box-shadow:0 0 0 3px rgba(0,112,192,.1)}
+.btn-auth{width:100%;padding:10px;background:var(--azul);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-top:1.25rem;font-family:'Tahoma',sans-serif}
+.btn-auth:hover{background:#002d6b}
+#auth-error{color:#dc2626;font-size:12px;margin-top:8px;text-align:center;min-height:16px}
+
+/* APP */
+#app-screen{display:none;min-height:100vh}
+.topbar{background:var(--azul);color:#fff;padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar h1{font-size:14px;font-weight:500}
+.topbar span{font-size:11px;opacity:.7}
+.topbar-right{display:flex;align-items:center;gap:10px;font-size:12px}
+.user-badge{background:rgba(255,255,255,.15);padding:4px 10px;border-radius:20px;font-size:11px}
+.btn-logout{background:rgba(255,255,255,.15);border:none;color:#fff;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'Tahoma',sans-serif}
+.btn-logout:hover{background:rgba(255,255,255,.25)}
+
+.nav{background:#fff;border-bottom:1px solid var(--border);display:flex;padding:0 1.5rem;gap:0}
+.nav-btn{padding:10px 18px;border:none;background:none;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;font-family:'Tahoma',sans-serif;transition:all .2s}
+.nav-btn.active{color:var(--azul);border-bottom-color:var(--azul);font-weight:500}
+.nav-btn:hover:not(.active){color:var(--text);background:#f9fafb}
+
+.page{display:none;padding:1.25rem 1.5rem;max-width:1100px;margin:0 auto}
+.page.active{display:block}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:.85rem}
+.card-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:.85rem}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:.85rem}
+.metric{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;border-top:3px solid var(--azul)}
+.metric .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.metric .val{font-size:24px;font-weight:600;color:var(--text)}
+.metric .sub{font-size:11px;color:var(--muted);margin-top:2px}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{background:var(--azul);color:#fff;padding:8px 10px;text-align:left;font-weight:500;font-size:11px}
+thead th:first-child{border-radius:6px 0 0 6px}
+thead th:last-child{border-radius:0 6px 6px 0}
+tbody td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:hover td{background:#f9fafb}
+tbody tr:last-child td{border-bottom:none}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.b-green{background:#dcfce7;color:var(--verde-t)}
+.b-yellow{background:#fef9c3;color:var(--amarillo-t)}
+.b-red{background:#fee2e2;color:var(--rojo-t)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block}
+.d-g{background:var(--verde)}.d-y{background:var(--amarillo)}.d-r{background:var(--rojo)}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:12px;color:var(--muted);font-weight:500}
+.fg input,.fg select,.fg textarea{padding:8px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'Tahoma',sans-serif;background:#fff;color:var(--text);outline:none}
+.fg input:focus,.fg select:focus{border-color:var(--azul-m);box-shadow:0 0 0 3px rgba(0,112,192,.08)}
+.sec-header{background:var(--azul-c);color:var(--azul);padding:6px 12px;font-size:11px;font-weight:600;border-radius:6px;margin:.85rem 0 .4rem;letter-spacing:.3px}
+.items-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:.5rem}
+.item-row{display:flex;align-items:center;gap:6px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:#fff;transition:background .15s}
+.item-row:hover{background:#f0f7ff}
+.item-row input[type=checkbox]{cursor:pointer;accent-color:var(--azul)}
+.item-row span{font-size:11px;flex:1}
+.item-row .pts{font-size:10px;color:var(--muted)}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem}
+.btn{padding:8px 20px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'Tahoma',sans-serif;font-weight:500;border:1px solid var(--border);transition:all .15s}
+.btn:active{transform:scale(.98)}
+.btn-p{background:var(--azul);color:#fff;border-color:var(--azul)}.btn-p:hover{background:#002d6b}
+.btn-s{background:#fff;color:var(--text)}.btn-s:hover{background:#f3f4f6}
+.btn-danger{background:#fee2e2;color:var(--rojo-t);border-color:#fca5a5}.btn-danger:hover{background:#fecaca}
+.btn-sm{padding:4px 10px;font-size:11px}
+
+/* FILTROS */
+.filter-row{display:flex;gap:8px;margin-bottom:.85rem;flex-wrap:wrap;align-items:center}
+.filter-row select,.filter-row input{padding:7px 10px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font-family:'Tahoma',sans-serif;outline:none}
+
+/* INFORME */
+.informe-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:2rem;max-width:800px;margin:0 auto}
+.informe-header{text-align:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid var(--azul)}
+.informe-header .inst{font-size:10px;color:var(--azul);font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.informe-header h2{font-size:18px;font-weight:600;color:var(--text);margin:.4rem 0}
+.informe-header .periodo{font-size:12px;color:var(--muted)}
+.informe-section{margin-bottom:1.25rem}
+.informe-section h3{font-size:12px;font-weight:600;color:var(--azul);border-bottom:1px solid var(--azul);padding-bottom:3px;margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.4px}
+.stats-box{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
+.stat-item{text-align:center;padding:.7rem;border:1px solid var(--border);border-radius:8px}
+.stat-item .s-val{font-size:20px;font-weight:600}
+.stat-item .s-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.firmas-row{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
+.firma-box{text-align:center}
+.firma-line{border-top:1px solid var(--text);padding-top:4px;font-size:11px;margin-top:2.5rem}
+
+/* TOP NC */
+.nc-item{margin-bottom:8px}
+.nc-bar-wrap{height:7px;background:#f3f4f6;border-radius:4px;overflow:hidden;margin-top:3px}
+.nc-bar-fill{height:100%;border-radius:4px;background:var(--rojo)}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--azul);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;display:none;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+
+/* LOADING */
+#loading{position:fixed;inset:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;z-index:9998;display:none}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--azul);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media print{
+  .topbar,.nav,.filter-row,.btn-row,.btn,.nav-btn{display:none!important}
+  .page{display:block!important;padding:0}
+  body{background:#fff}
+  .informe-wrap{border:none;box-shadow:none}
+}
+
+@media(max-width:700px){
+  .metrics{grid-template-columns:1fr 1fr}
+  .charts-row{grid-template-columns:1fr}
+  .items-grid{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div style="width:64px;height:64px;background:#003F87;border-radius:12px;margin:0 auto;display:flex;align-items:center;justify-content:center">
+        <span style="color:#fff;font-size:22px;font-weight:700">E</span>
+      </div>
+      <h2>EsSalud — Auditoría</h2>
+      <p>Sistema de Auditoría de Registros Médicos</p>
+    </div>
+    <label>Correo electrónico</label>
+    <input type="email" id="login-email" placeholder="usuario@essalud.gob.pe" autocomplete="username">
+    <label>Contraseña</label>
+    <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+    <button class="btn-auth" onclick="login()">Ingresar</button>
+    <div id="auth-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-screen">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div style="background:rgba(255,255,255,.2);width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px">E</div>
+      <div>
+        <div style="font-size:14px;font-weight:500">Sistema de Auditoría de Registros</div>
+        <div style="font-size:10px;opacity:.7">EsSalud — Centro Quirúrgico</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="user-badge" id="user-email-badge">—</span>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-btn active" onclick="goTo('dashboard',this)">Dashboard</button>
+    <button class="nav-btn" onclick="goTo('registro',this)">Registrar auditoría</button>
+    <button class="nav-btn" onclick="goTo('matriz',this)">Matriz de datos</button>
+    <button class="nav-btn" onclick="goTo('informe',this)">Informe mensual</button>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+      <div style="font-size:16px;font-weight:600">Dashboard mensual</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="mes-filter" onchange="loadDashboard()" style="padding:7px 10px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-family:'Tahoma',sans-serif">
+          <option value="">Todos los meses</option>
+        </select>
+      </div>
+    </div>
+    <div class="metrics" id="metrics"></div>
+    <div class="charts-row">
+      <div class="card">
+        <div class="card-title">Tendencia mensual de cumplimiento</div>
+        <div style="position:relative;height:200px"><canvas id="ch-tend"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Distribución de calificaciones</div>
+        <div style="position:relative;height:200px"><canvas id="ch-dist"></canvas></div>
+      </div>
+    </div>
+    <div class="charts-row">
+      <div class="card">
+        <div class="card-title">Promedio por tipo de auditoría</div>
+        <div style="position:relative;height:180px"><canvas id="ch-tipo"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Top 5 ítems con no conformidad</div>
+        <div id="top-nc" style="padding:.25rem 0"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Ranking por servicio</div>
+      <table id="tbl-srv"><thead><tr><th>Servicio</th><th>N° auditorías</th><th>Prom. puntaje</th><th>% Satisfactorio</th><th>Estado</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+
+  <!-- REGISTRO -->
+  <div class="page" id="page-registro">
+    <div class="card">
+      <div class="card-title">Nueva auditoría</div>
+      <div class="form-grid">
+        <div class="fg"><label>N° Historia Clínica *</label><input id="f-hc" type="text" placeholder="Ej: 79728"></div>
+        <div class="fg"><label>Fecha de atención *</label><input id="f-fecha" type="date"></div>
+        <div class="fg"><label>Servicio auditado *</label>
+          <select id="f-servicio">
+            <option value="">Seleccionar...</option>
+            <option>ANESTESIOLOGÍA</option><option>CIRUGÍA GENERAL</option>
+            <option>OFTALMOLOGÍA</option><option>TRAUMATOLOGÍA</option>
+            <option>GINECOLOGÍA</option><option>UROLOGÍA</option>
+            <option>MEDICINA INTERNA</option><option>PEDIATRÍA</option>
+          </select>
+        </div>
+        <div class="fg"><label>Tipo de auditoría *</label>
+          <select id="f-tipo" onchange="renderItems()">
+            <option value="">Seleccionar...</option>
+            <option value="CI">Consentimiento Informado</option>
+            <option value="CQ">Centro Quirúrgico</option>
+            <option value="OT">Otro formato</option>
+          </select>
+        </div>
+        <div class="fg"><label>Colegiatura del médico</label><input id="f-cole" type="text" placeholder="Ej: 66076"></div>
+        <div class="fg"><label>Diagnóstico (CIE-10)</label><input id="f-dx" type="text" placeholder="Ej: H26.2 — Catarata complicada"></div>
+        <div class="fg"><label>Número de auditoría</label><input id="f-naud" type="text" placeholder="Ej: 001-2026"></div>
+        <div class="fg"><label>Observaciones</label><input id="f-obs" type="text" placeholder="Opcional"></div>
+      </div>
+      <div id="items-container"></div>
+      <div class="btn-row">
+        <button class="btn btn-s" onclick="limpiar()">Limpiar</button>
+        <button class="btn btn-p" onclick="guardar()">Guardar auditoría</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATRIZ -->
+  <div class="page" id="page-matriz">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-wrap:wrap;gap:8px">
+      <div style="font-size:16px;font-weight:600">Matriz de datos</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-s btn-sm" onclick="exportCSV()">Exportar CSV</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <select id="fm-mes"><option value="">Todos los meses</option></select>
+      <select id="fm-tipo"><option value="">Todos los tipos</option><option value="CI">Consentimiento Informado</option><option value="CQ">Centro Quirúrgico</option><option value="OT">Otro</option></select>
+      <select id="fm-calif"><option value="">Todas las calificaciones</option><option value="S">Satisfactorio</option><option value="P">Por mejorar</option><option value="D">Deficiente</option></select>
+      <input id="fm-hc" type="text" placeholder="Buscar por HC..." style="width:160px">
+      <button class="btn btn-s btn-sm" onclick="loadMatriz()">Filtrar</button>
+    </div>
+    <div class="card" style="padding:.5rem;overflow-x:auto">
+      <table id="tbl-matriz">
+        <thead><tr><th>HC</th><th>Fecha</th><th>Servicio</th><th>Tipo</th><th>Puntaje</th><th>Calificación</th><th>Colegiatura</th><th>Auditor</th><th></th></tr></thead>
+        <tbody id="tbody-matriz"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFORME -->
+  <div class="page" id="page-informe">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-wrap:wrap;gap:8px">
+      <div style="font-size:16px;font-weight:600">Informe mensual</div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <select id="fi-mes" onchange="loadInforme()" style="padding:7px 10px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-family:'Tahoma',sans-serif"><option value="">Seleccionar mes...</option></select>
+        <button class="btn btn-s btn-sm" onclick="window.print()">Imprimir / PDF</button>
+      </div>
+    </div>
+    <div class="informe-wrap" id="informe-body">
+      <div style="text-align:center;color:var(--muted);padding:2rem;font-size:13px">Seleccionar un mes para generar el informe</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div id="loading"><div class="spinner"></div></div>
+
+<script>
+// ── CONFIGURACIÓN SUPABASE ────────────────────────────────────────────────────
+// Reemplaza estos dos valores con los de tu proyecto Supabase
+const SUPABASE_URL = 'https://gitnuuningkcbcpkmagy.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_WnXtoQgf05g2TRBcoCVB2w_lVfrswGZ'
+// ─────────────────────────────────────────────────────────────────────────────
+
+const { createClient } = window.supabase
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+const ITEMS_CI = [
+  {id:'hc',label:'N° historia clínica',peso:4,sec:'Observaciones'},
+  {id:'fh',label:'Fecha y hora',peso:6,sec:'Observaciones'},
+  {id:'nom',label:'Nombre y apellidos paciente',peso:7,sec:'Observaciones'},
+  {id:'dni',label:'N° DNI paciente',peso:7,sec:'Observaciones'},
+  {id:'nproc',label:'Nombre del procedimiento',peso:7,sec:'Observaciones'},
+  {id:'desc',label:'Descripción sencilla',peso:7,sec:'Observaciones'},
+  {id:'riesgos',label:'Riesgos reales y potenciales',peso:7,sec:'Observaciones'},
+  {id:'ea',label:'Efectos adversos',peso:7,sec:'Observaciones'},
+  {id:'prog',label:'Pronóstico y recomendaciones',peso:7,sec:'Observaciones'},
+  {id:'firma',label:'Firma y sello responsable',peso:7,sec:'Observaciones'},
+  {id:'conf',label:'Conformidad firmada',peso:7,sec:'Observaciones'},
+  {id:'rev-nom',label:'Nombre y apellidos (revoc.)',peso:7,sec:'Revocatoria'},
+  {id:'rev-dni',label:'N° DNI (revoc.)',peso:7,sec:'Revocatoria'},
+  {id:'rev-fh',label:'Fecha y hora (revoc.)',peso:6,sec:'Revocatoria'},
+  {id:'rev-firma',label:'Revocatoria firmada',peso:7,sec:'Revocatoria'},
+]
+const ITEMS_CQ = [
+  {id:'fil-hc',label:'N° historia clínica',peso:0.5,sec:'Filiación'},
+  {id:'fil-nom',label:'Nombres y apellidos',peso:0.5,sec:'Filiación'},
+  {id:'fil-seg',label:'Tipo y N° seguro',peso:0.5,sec:'Filiación'},
+  {id:'fil-nac',label:'Lugar y fecha de nacimiento',peso:0.5,sec:'Filiación'},
+  {id:'ord-diag',label:'Diagnóstico',peso:4,sec:'Orden de Intervención'},
+  {id:'ord-proc',label:'Procedimiento quirúrgico',peso:4,sec:'Orden de Intervención'},
+  {id:'ord-grupo',label:'Grupo sanguíneo / Hb',peso:2,sec:'Orden de Intervención'},
+  {id:'rep-ini',label:'Hora inicio/término cirugía',peso:2,sec:'Reporte Operatorio'},
+  {id:'rep-post',label:'Diagnóstico post operatorio',peso:4,sec:'Reporte Operatorio'},
+  {id:'rep-tec',label:'Técnica / procedimiento',peso:4,sec:'Reporte Operatorio'},
+  {id:'pre-ant',label:'Antecedentes clínicos',peso:2,sec:'Evaluación Preanestésica'},
+  {id:'pre-tipo',label:'Tipo de anestesia prevista',peso:2,sec:'Evaluación Preanestésica'},
+  {id:'anes-tec',label:'Técnica anestésica',peso:2,sec:'Hoja Anestésica'},
+  {id:'anes-med',label:'Medicación administrada',peso:2,sec:'Hoja Anestésica'},
+]
+const ALL_ITEMS = [...ITEMS_CI,...ITEMS_CQ]
+const TIPO_LABEL = {CI:'Consentimiento Informado',CQ:'Centro Quirúrgico',OT:'Otro'}
+const MESES_LABEL = {'01':'Enero','02':'Febrero','03':'Marzo','04':'Abril','05':'Mayo','06':'Junio','07':'Julio','08':'Agosto','09':'Septiembre','10':'Octubre','11':'Noviembre','12':'Diciembre'}
+
+let currentUser = null
+let allData = []
+let charts = {}
+
+function loading(v){document.getElementById('loading').style.display=v?'flex':'none'}
+function toast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',dur)}
+function calcCalif(p){return p>=90?'S':p>=75?'P':'D'}
+function califLabel(c){return c==='S'?'Satisfactorio':c==='P'?'Por mejorar':'Deficiente'}
+function badge(c){return c==='S'?`<span class="badge b-green"><span class="dot d-g"></span>Satisfactorio</span>`:c==='P'?`<span class="badge b-yellow"><span class="dot d-y"></span>Por mejorar</span>`:`<span class="badge b-red"><span class="dot d-r"></span>Deficiente</span>`}
+function dotClass(p){return p>=90?'d-g':p>=75?'d-y':'d-r'}
+function mesLabel(m){if(!m)return '';const[y,mo]=m.split('-');return (MESES_LABEL[mo]||mo)+' '+y}
+
+async function login(){
+  const email=document.getElementById('login-email').value.trim()
+  const pass=document.getElementById('login-pass').value
+  const err=document.getElementById('auth-error')
+  err.textContent=''
+  if(!email||!pass){err.textContent='Completar correo y contraseña.';return}
+  loading(true)
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pass})
+  loading(false)
+  if(error){err.textContent='Credenciales incorrectas. Verificar.';return}
+  currentUser=data.user
+  initApp()
+}
+
+async function logout(){
+  await sb.auth.signOut()
+  currentUser=null
+  document.getElementById('auth-screen').style.display='flex'
+  document.getElementById('app-screen').style.display='none'
+}
+
+async function initApp(){
+  document.getElementById('auth-screen').style.display='none'
+  document.getElementById('app-screen').style.display='block'
+  document.getElementById('user-email-badge').textContent=currentUser.email
+  document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0]
+  loading(true)
+  const{data,error}=await sb.from('auditorias').select('*').order('fecha',{ascending:false})
+  loading(false)
+  if(error){toast('Error al cargar datos: '+error.message);return}
+  allData=data||[]
+  populateMesSelects()
+  loadDashboard()
+}
+
+function populateMesSelects(){
+  const meses=[...new Set(allData.map(d=>d.mes))].filter(Boolean).sort().reverse()
+  const selects=['mes-filter','fm-mes','fi-mes']
+  selects.forEach(id=>{
+    const sel=document.getElementById(id)
+    const cur=sel.value
+    sel.innerHTML=id==='fi-mes'?'<option value="">Seleccionar mes...</option>':'<option value="">Todos los meses</option>'
+    meses.forEach(m=>{
+      const opt=document.createElement('option')
+      opt.value=m;opt.textContent=mesLabel(m)
+      sel.appendChild(opt)
+    })
+    if(cur)sel.value=cur
+  })
+}
+
+function getMes(){return document.getElementById('mes-filter').value}
+
+function loadDashboard(){
+  const mes=getMes()
+  const data=mes?allData.filter(d=>d.mes===mes):allData
+  const total=data.length
+  const prom=total?Math.round(data.reduce((a,b)=>a+b.puntaje,0)/total):0
+  const sat=data.filter(d=>d.calif==='S').length
+  const def=data.filter(d=>d.calif==='D').length
+  const pm=data.filter(d=>d.calif==='P').length
+
+  const mesCur=mes||null
+  const allMeses=[...new Set(allData.map(d=>d.mes))].filter(Boolean).sort()
+  const idxCur=mesCur?allMeses.indexOf(mesCur):-1
+  let diff=null
+  if(idxCur>0){
+    const prev=allData.filter(d=>d.mes===allMeses[idxCur-1])
+    if(prev.length){const pp=Math.round(prev.reduce((a,b)=>a+b.puntaje,0)/prev.length);diff=prom-pp}
+  }
+
+  document.getElementById('metrics').innerHTML=`
+    <div class="metric"><div class="lbl">Auditorías</div><div class="val">${total}</div><div class="sub">en el período</div></div>
+    <div class="metric"><div class="lbl">Puntaje promedio</div><div class="val">${prom}<small style="font-size:14px">/100</small></div><div class="sub" style="color:${diff===null?'var(--muted)':diff>=0?'var(--verde-t)':'var(--rojo-t)'}">${diff===null?'—':diff>=0?'▲ +'+diff+' vs mes ant.':'▼ '+diff+' vs mes ant.'}</div></div>
+    <div class="metric" style="border-top-color:var(--verde)"><div class="lbl">Satisfactorios</div><div class="val" style="color:var(--verde-t)">${total?Math.round(sat/total*100):0}%</div><div class="sub">${sat} de ${total}</div></div>
+    <div class="metric" style="border-top-color:var(--rojo)"><div class="lbl">Deficientes</div><div class="val" style="color:var(--rojo-t)">${def}</div><div class="sub">${total?Math.round(def/total*100):0}% del total</div></div>
+  `
+
+  const mesesAll=allMeses.slice(-6)
+  const promediosMes=mesesAll.map(m=>{const d=allData.filter(x=>x.mes===m);return d.length?Math.round(d.reduce((a,b)=>a+b.puntaje,0)/d.length):null})
+  if(charts.tend)charts.tend.destroy()
+  charts.tend=new Chart(document.getElementById('ch-tend'),{
+    type:'line',
+    data:{labels:mesesAll.map(mesLabel),datasets:[{data:promediosMes,borderColor:'#003F87',backgroundColor:'rgba(0,63,135,.07)',tension:.35,pointBackgroundColor:'#003F87',pointRadius:4,fill:true,spanGaps:true}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}},grid:{display:false}}}}
+  })
+
+  if(charts.dist)charts.dist.destroy()
+  charts.dist=new Chart(document.getElementById('ch-dist'),{
+    type:'doughnut',
+    data:{labels:['Satisfactorio','Por mejorar','Deficiente'],datasets:[{data:[sat,pm,def],backgroundColor:['#70AD47','#FFD966','#FF4C4C'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:8}}}}
+  })
+
+  const tipos=['CI','CQ']
+  const promTipo=tipos.map(t=>{const d=data.filter(x=>x.tipo===t);return d.length?Math.round(d.reduce((a,b)=>a+b.puntaje,0)/d.length):0})
+  if(charts.tipo)charts.tipo.destroy()
+  charts.tipo=new Chart(document.getElementById('ch-tipo'),{
+    type:'bar',
+    data:{labels:['Consentimiento Informado','Centro Quirúrgico'],datasets:[{data:promTipo,backgroundColor:['#0070C0','#003F87'],borderRadius:5,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}},grid:{display:false}}}}
+  })
+
+  const ncCount={}
+  data.forEach(d=>{if(!d.items)return;Object.entries(d.items).forEach(([k,v])=>{if(v==='NC'){ncCount[k]=(ncCount[k]||0)+1}})})
+  const sorted=Object.entries(ncCount).sort((a,b)=>b[1]-a[1]).slice(0,5)
+  document.getElementById('top-nc').innerHTML=sorted.length?sorted.map(([id,cnt])=>{
+    const it=ALL_ITEMS.find(x=>x.id===id)
+    const pct=total?Math.round(cnt/total*100):0
+    return `<div class="nc-item"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="color:var(--text);max-width:75%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${it?it.label:id}</span><span style="color:var(--rojo-t);font-weight:600;flex-shrink:0">${cnt} (${pct}%)</span></div><div class="nc-bar-wrap"><div class="nc-bar-fill" style="width:${pct}%"></div></div></div>`
+  }).join(''):'<div style="color:var(--muted);font-size:12px;padding:.5rem 0">Sin no conformidades en este período</div>'
+
+  const servMap={}
+  data.forEach(d=>{if(!servMap[d.servicio])servMap[d.servicio]={n:0,pts:[],sat:0};servMap[d.servicio].n++;servMap[d.servicio].pts.push(d.puntaje);if(d.calif==='S')servMap[d.servicio].sat++})
+  document.querySelector('#tbl-srv tbody').innerHTML=Object.entries(servMap).map(([s,v])=>{
+    const p=Math.round(v.pts.reduce((a,b)=>a+b,0)/v.pts.length)
+    const psat=Math.round(v.sat/v.n*100)
+    return `<tr><td style="font-weight:500">${s}</td><td style="text-align:center">${v.n}</td><td><span class="dot ${dotClass(p)}" style="margin-right:5px"></span>${p}/100</td><td style="text-align:center">${psat}%</td><td>${badge(calcCalif(p))}</td></tr>`
+  }).sort((a,b)=>b.localeCompare(a)).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1rem">Sin datos</td></tr>'
+}
+
+function renderItems(){
+  const tipo=document.getElementById('f-tipo').value
+  const cont=document.getElementById('items-container')
+  if(!tipo){cont.innerHTML='';return}
+  const items=tipo==='CI'?ITEMS_CI:tipo==='CQ'?ITEMS_CQ:[]
+  if(!items.length){cont.innerHTML='<div class="sec-header">Puntaje manual</div><div class="fg" style="max-width:200px"><label>Puntaje obtenido (0–100)</label><input type="number" id="item-manual" min="0" max="100" value="100"></div>';return}
+  const secciones=[...new Set(items.map(x=>x.sec))]
+  cont.innerHTML=secciones.map(sec=>`
+    <div class="sec-header">${sec}</div>
+    <div class="items-grid">
+      ${items.filter(it=>it.sec===sec).map(it=>`
+        <label class="item-row">
+          <input type="checkbox" id="item-${it.id}" checked>
+          <span>${it.label}</span>
+          <span class="pts">${it.peso}pts</span>
+        </label>
+      `).join('')}
+    </div>
+  `).join('')
+}
+
+async function guardar(){
+  const hc=document.getElementById('f-hc').value.trim()
+  const fecha=document.getElementById('f-fecha').value
+  const servicio=document.getElementById('f-servicio').value
+  const tipo=document.getElementById('f-tipo').value
+  const cole=document.getElementById('f-cole').value.trim()
+  const dx=document.getElementById('f-dx').value.trim()
+  const naud=document.getElementById('f-naud').value.trim()
+  const obs=document.getElementById('f-obs').value.trim()
+  if(!hc||!fecha||!servicio||!tipo){toast('Completar: HC, fecha, servicio y tipo.');return}
+
+  const items=tipo==='CI'?ITEMS_CI:tipo==='CQ'?ITEMS_CQ:[]
+  const itemsConf={}
+  let puntaje=0
+
+  if(tipo==='OT'){
+    const m=document.getElementById('item-manual')
+    puntaje=m?Math.min(100,Math.max(0,parseInt(m.value)||0)):0
+  } else {
+    items.forEach(it=>{
+      const el=document.getElementById('item-'+it.id)
+      const conf=el?el.checked:false
+      itemsConf[it.id]=conf?'C':'NC'
+      if(conf)puntaje+=it.peso
+    })
+    puntaje=Math.round(puntaje)
+  }
+
+  const mes=fecha.substring(0,7)
+  const row={hc,fecha,servicio,tipo,puntaje,calif:calcCalif(puntaje),cole,dx,naud,obs,mes,items:itemsConf,user_id:currentUser.id,auditor:currentUser.email}
+  loading(true)
+  const{data,error}=await sb.from('auditorias').insert([row]).select()
+  loading(false)
+  if(error){toast('Error al guardar: '+error.message);return}
+  allData.unshift(data[0])
+  populateMesSelects()
+  toast(`Auditoría guardada · HC ${hc} · ${puntaje}/100`)
+  limpiar()
+}
+
+function limpiar(){
+  ['f-hc','f-cole','f-dx','f-naud','f-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0]
+  document.getElementById('f-servicio').selectedIndex=0
+  document.getElementById('f-tipo').selectedIndex=0
+  document.getElementById('items-container').innerHTML=''
+}
+
+function loadMatriz(){
+  const mes=document.getElementById('fm-mes').value
+  const tipo=document.getElementById('fm-tipo').value
+  const calif=document.getElementById('fm-calif').value
+  const hcQ=document.getElementById('fm-hc').value.trim().toLowerCase()
+  let data=allData
+  if(mes)data=data.filter(d=>d.mes===mes)
+  if(tipo)data=data.filter(d=>d.tipo===tipo)
+  if(calif)data=data.filter(d=>d.calif===calif)
+  if(hcQ)data=data.filter(d=>String(d.hc).toLowerCase().includes(hcQ))
+  document.getElementById('tbody-matriz').innerHTML=data.map(d=>`
+    <tr>
+      <td style="font-weight:500">${d.hc}</td>
+      <td>${d.fecha}</td>
+      <td>${d.servicio||'—'}</td>
+      <td style="font-size:11px">${TIPO_LABEL[d.tipo]||d.tipo}</td>
+      <td><span class="dot ${dotClass(d.puntaje)}" style="margin-right:5px"></span>${d.puntaje}/100</td>
+      <td>${badge(d.calif)}</td>
+      <td>${d.cole||'—'}</td>
+      <td style="font-size:11px">${d.auditor||'—'}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="eliminar('${d.id}')">Eliminar</button></td>
+    </tr>
+  `).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:1.5rem">Sin registros con esos filtros</td></tr>'
+}
+
+async function eliminar(id){
+  if(!confirm('¿Eliminar esta auditoría?'))return
+  loading(true)
+  const{error}=await sb.from('auditorias').delete().eq('id',id)
+  loading(false)
+  if(error){toast('Error: '+error.message);return}
+  allData=allData.filter(d=>d.id!==id)
+  loadMatriz();loadDashboard()
+  toast('Registro eliminado')
+}
+
+function exportCSV(){
+  const header='HC,Fecha,Servicio,Tipo,Puntaje,Calificacion,Colegiatura,Auditor,Mes\n'
+  const rows=allData.map(d=>[d.hc,d.fecha,d.servicio,d.tipo,d.puntaje,califLabel(d.calif),d.cole,d.auditor,d.mes].map(v=>`"${v||''}"`).join(',')).join('\n')
+  const blob=new Blob(['\ufeff'+header+rows],{type:'text/csv;charset=utf-8'})
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='auditoria_essalud.csv';a.click()
+  toast('CSV descargado')
+}
+
+function loadInforme(){
+  const mes=document.getElementById('fi-mes').value
+  const data=mes?allData.filter(d=>d.mes===mes):[]
+  const body=document.getElementById('informe-body')
+  if(!mes){body.innerHTML='<div style="text-align:center;color:var(--muted);padding:2rem;font-size:13px">Seleccionar un mes para generar el informe</div>';return}
+  const total=data.length
+  const prom=total?Math.round(data.reduce((a,b)=>a+b.puntaje,0)/total):0
+  const sat=data.filter(d=>d.calif==='S').length
+  const pm=data.filter(d=>d.calif==='P').length
+  const df=data.filter(d=>d.calif==='D').length
+
+  body.innerHTML=`
+    <div class="informe-header">
+      <div class="inst">Seguro Social de Salud del Perú — EsSalud</div>
+      <h2>Informe de Auditoría de Registros Médicos</h2>
+      <div class="periodo">Período: ${mesLabel(mes)} · Comité de Auditoría de Calidad</div>
+    </div>
+    <div class="informe-section">
+      <h3>I. Resumen ejecutivo</h3>
+      <div class="stats-box">
+        <div class="stat-item"><div class="s-val" style="color:var(--azul)">${total}</div><div class="s-lbl">Auditorías</div></div>
+        <div class="stat-item"><div class="s-val" style="color:${prom>=90?'var(--verde-t)':prom>=75?'var(--amarillo-t)':'var(--rojo-t)'}">${prom}/100</div><div class="s-lbl">Promedio</div></div>
+        <div class="stat-item"><div class="s-val" style="color:var(--verde-t)">${sat}</div><div class="s-lbl">Satisfactorios</div></div>
+        <div class="stat-item"><div class="s-val" style="color:var(--rojo-t)">${df}</div><div class="s-lbl">Deficientes</div></div>
+      </div>
+    </div>
+    <div class="informe-section">
+      <h3>II. Distribución de calificaciones</h3>
+      <table><thead><tr><th>Calificación</th><th>Criterio</th><th style="text-align:center">N°</th><th style="text-align:center">%</th></tr></thead>
+      <tbody>
+        <tr><td>${badge('S')}</td><td>90 – 100% del puntaje máximo esperado</td><td style="text-align:center">${sat}</td><td style="text-align:center">${total?Math.round(sat/total*100):0}%</td></tr>
+        <tr><td>${badge('P')}</td><td>75 – 89% del puntaje máximo esperado</td><td style="text-align:center">${pm}</td><td style="text-align:center">${total?Math.round(pm/total*100):0}%</td></tr>
+        <tr><td>${badge('D')}</td><td>&lt;75% del puntaje máximo esperado</td><td style="text-align:center">${df}</td><td style="text-align:center">${total?Math.round(df/total*100):0}%</td></tr>
+      </tbody></table>
+    </div>
+    <div class="informe-section">
+      <h3>III. Detalle por historia clínica</h3>
+      <table><thead><tr><th>HC</th><th>Fecha</th><th>Servicio</th><th>Tipo</th><th style="text-align:center">Puntaje</th><th>Calificación</th><th>Colegiatura</th></tr></thead>
+      <tbody>${data.map((d,i)=>`<tr style="background:${i%2?'#f9fafb':'#fff'}"><td style="font-weight:500">${d.hc}</td><td>${d.fecha}</td><td>${d.servicio||'—'}</td><td style="font-size:11px">${TIPO_LABEL[d.tipo]||d.tipo}</td><td style="text-align:center;font-weight:600">${d.puntaje}/100</td><td>${badge(d.calif)}</td><td>${d.cole||'—'}</td></tr>`).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:1rem">Sin registros</td></tr>'}</tbody></table>
+    </div>
+    <div class="informe-section">
+      <h3>IV. Conclusiones y recomendaciones</h3>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:1rem;min-height:80px;font-size:12px;color:var(--muted);font-style:italic">Completar en reunión del comité de auditoría.</div>
+    </div>
+    <div class="firmas-row">
+      <div class="firma-box"><div class="firma-line">Auditor Médico<br><span style="color:var(--muted)">Comité de Auditoría</span></div></div>
+      <div class="firma-box"><div class="firma-line">Jefe de Servicio / Dpto.<br><span style="color:var(--muted)">Visto Bueno</span></div></div>
+    </div>
+  `
+}
+
+function goTo(page, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'))
+  document.getElementById('page-'+page).classList.add('active')
+  btn.classList.add('active')
+  if(page==='matriz')loadMatriz()
+  if(page==='dashboard')loadDashboard()
+  if(page==='informe')loadInforme()
+}
+
+sb.auth.onAuthStateChange((event,session)=>{
+  if(session){currentUser=session.user;initApp()}
+})
+</script>
+</body>
+</html>
