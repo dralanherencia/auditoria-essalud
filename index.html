@@ -18,131 +18,257 @@
 body{font-family:'Tahoma',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
 
 /* AUTH */
-#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#003F87 0%,#0070C0 100%)}
-.auth-card{background:#fff;border-radius:16px;padding:2.5rem 2rem;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.auth-logo{text-align:center;margin-bottom:1.5rem}
-.auth-logo img{height:48px}
-.auth-logo h2{color:var(--azul);font-size:16px;font-weight:600;margin-top:.5rem}
-.auth-logo p{color:var(--muted);font-size:12px;margin-top:2px}
-.auth-card label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px;margin-top:12px}
+#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#003F87 0%,#0070C0 100%);padding:1rem}
+.auth-card{background:#fff;border-radius:16px;padding:2rem 1.75rem;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.auth-logo{text-align:center;margin-bottom:1.25rem}
+.auth-logo .icon{width:56px;height:56px;background:#003F87;border-radius:12px;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff}
+.auth-logo h2{color:var(--azul);font-size:15px;font-weight:600;margin:.4rem 0 2px}
+.auth-logo p{color:var(--muted);font-size:11px}
+.auth-card label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px;margin-top:10px}
 .auth-card input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'Tahoma',sans-serif;outline:none}
 .auth-card input:focus{border-color:var(--azul-m);box-shadow:0 0 0 3px rgba(0,112,192,.1)}
-.btn-auth{width:100%;padding:10px;background:var(--azul);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-top:1.25rem;font-family:'Tahoma',sans-serif}
+.btn-auth{width:100%;padding:10px;background:var(--azul);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-top:1rem;font-family:'Tahoma',sans-serif}
 .btn-auth:hover{background:#002d6b}
-#auth-error{color:#dc2626;font-size:12px;margin-top:8px;text-align:center;min-height:16px}
+#auth-error{color:#dc2626;font-size:12px;margin-top:6px;text-align:center;min-height:16px}
 
 /* APP */
 #app-screen{display:none;min-height:100vh}
-.topbar{background:var(--azul);color:#fff;padding:.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.topbar-left{display:flex;align-items:center;gap:12px}
-.topbar h1{font-size:14px;font-weight:500}
-.topbar span{font-size:11px;opacity:.7}
-.topbar-right{display:flex;align-items:center;gap:10px;font-size:12px}
-.user-badge{background:rgba(255,255,255,.15);padding:4px 10px;border-radius:20px;font-size:11px}
-.btn-logout{background:rgba(255,255,255,.15);border:none;color:#fff;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'Tahoma',sans-serif}
-.btn-logout:hover{background:rgba(255,255,255,.25)}
+.topbar{background:var(--azul);color:#fff;padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.topbar-brand .ico{background:rgba(255,255,255,.2);width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.topbar h1{font-size:13px;font-weight:500;line-height:1.2}
+.topbar .sub{font-size:10px;opacity:.7}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.user-badge{background:rgba(255,255,255,.15);padding:3px 8px;border-radius:20px;font-size:10px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-logout{background:rgba(255,255,255,.15);border:none;color:#fff;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-family:'Tahoma',sans-serif;white-space:nowrap}
 
-.nav{background:#fff;border-bottom:1px solid var(--border);display:flex;padding:0 1.5rem;gap:0}
-.nav-btn{padding:10px 18px;border:none;background:none;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;font-family:'Tahoma',sans-serif;transition:all .2s}
+/* NAV */
+.nav{background:#fff;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{padding:9px 14px;border:none;background:none;cursor:pointer;font-size:12px;color:var(--muted);border-bottom:2px solid transparent;font-family:'Tahoma',sans-serif;white-space:nowrap;flex-shrink:0}
 .nav-btn.active{color:var(--azul);border-bottom-color:var(--azul);font-weight:500}
-.nav-btn:hover:not(.active){color:var(--text);background:#f9fafb}
 
-.page{display:none;padding:1.25rem 1.5rem;max-width:1100px;margin:0 auto}
+.page{display:none;padding:1rem;max-width:1100px;margin:0 auto}
 .page.active{display:block}
+.page-title{font-size:15px;font-weight:600;margin-bottom:.85rem}
 
 /* CARDS */
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:.85rem}
-.card-title{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:.85rem}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:.85rem}
-.metric{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;border-top:3px solid var(--azul)}
-.metric .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
-.metric .val{font-size:24px;font-weight:600;color:var(--text)}
-.metric .sub{font-size:11px;color:var(--muted);margin-top:2px}
-.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:.75rem}
+.card-title{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:.75rem}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:.75rem}
+.metric{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;border-top:3px solid var(--azul)}
+.metric .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.metric .val{font-size:22px;font-weight:600}
+.metric .sub{font-size:10px;color:var(--muted);margin-top:2px}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
 
 /* TABLE */
 table{width:100%;border-collapse:collapse;font-size:12px}
-thead th{background:var(--azul);color:#fff;padding:8px 10px;text-align:left;font-weight:500;font-size:11px}
+thead th{background:var(--azul);color:#fff;padding:7px 8px;text-align:left;font-weight:500;font-size:11px}
 thead th:first-child{border-radius:6px 0 0 6px}
 thead th:last-child{border-radius:0 6px 6px 0}
-tbody td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
 tbody tr:hover td{background:#f9fafb}
 tbody tr:last-child td{border-bottom:none}
 
 /* BADGES */
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
 .b-green{background:#dcfce7;color:var(--verde-t)}
 .b-yellow{background:#fef9c3;color:var(--amarillo-t)}
 .b-red{background:#fee2e2;color:var(--rojo-t)}
-.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
 .d-g{background:var(--verde)}.d-y{background:var(--amarillo)}.d-r{background:var(--rojo)}
 
 /* FORM */
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
-.fg{display:flex;flex-direction:column;gap:5px}
-.fg label{font-size:12px;color:var(--muted);font-weight:500}
-.fg input,.fg select,.fg textarea{padding:8px 11px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'Tahoma',sans-serif;background:#fff;color:var(--text);outline:none}
-.fg input:focus,.fg select:focus{border-color:var(--azul-m);box-shadow:0 0 0 3px rgba(0,112,192,.08)}
-.sec-header{background:var(--azul-c);color:var(--azul);padding:6px 12px;font-size:11px;font-weight:600;border-radius:6px;margin:.85rem 0 .4rem;letter-spacing:.3px}
-.items-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:.5rem}
-.item-row{display:flex;align-items:center;gap:6px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:#fff;transition:background .15s}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:.75rem}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:11px;color:var(--muted);font-weight:500}
+.fg input,.fg select,.fg textarea{padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:'Tahoma',sans-serif;background:#fff;color:var(--text);outline:none;width:100%}
+.fg input:focus,.fg select:focus{border-color:var(--azul-m);box-shadow:0 0 0 2px rgba(0,112,192,.08)}
+
+/* ÍTEMS */
+.sec-header{background:var(--azul-c);color:var(--azul);padding:5px 10px;font-size:11px;font-weight:600;border-radius:6px;margin:.6rem 0 .3rem}
+.items-list{display:flex;flex-direction:column;gap:4px}
+.item-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);border-radius:7px;cursor:pointer;background:#fff;transition:background .12s}
 .item-row:hover{background:#f0f7ff}
-.item-row input[type=checkbox]{cursor:pointer;accent-color:var(--azul)}
-.item-row span{font-size:11px;flex:1}
-.item-row .pts{font-size:10px;color:var(--muted)}
-.btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem}
-.btn{padding:8px 20px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'Tahoma',sans-serif;font-weight:500;border:1px solid var(--border);transition:all .15s}
+.item-row.conforme{background:#f0fdf4;border-color:#86efac}
+.item-row.noconforme{background:#fff5f5;border-color:#fca5a5}
+.item-row input[type=radio]{display:none}
+.item-label{flex:1;font-size:12px}
+.item-pts{font-size:10px;color:var(--muted);flex-shrink:0;min-width:32px;text-align:right}
+.item-controls{display:flex;gap:4px;flex-shrink:0}
+.btn-c{padding:3px 8px;border-radius:5px;font-size:11px;border:1px solid;cursor:pointer;font-family:'Tahoma',sans-serif;font-weight:500;transition:all .12s}
+.btn-c.c{background:#dcfce7;border-color:#86efac;color:var(--verde-t)}
+.btn-c.c.active,.btn-c.c:hover{background:#16a34a;border-color:#16a34a;color:#fff}
+.btn-c.nc{background:#fee2e2;border-color:#fca5a5;color:var(--rojo-t)}
+.btn-c.nc.active,.btn-c.nc:hover{background:#dc2626;border-color:#dc2626;color:#fff}
+.btn-c.na{background:#f3f4f6;border-color:#d1d5db;color:var(--muted)}
+.btn-c.na.active,.btn-c.na:hover{background:#6b7280;border-color:#6b7280;color:#fff}
+
+/* PUNTAJE EN VIVO */
+.score-live{background:var(--azul);color:#fff;border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.score-live .num{font-size:28px;font-weight:700}
+.score-live .lbl{font-size:11px;opacity:.8}
+.score-bar{height:8px;background:rgba(255,255,255,.2);border-radius:4px;margin-top:4px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:4px;transition:width .3s}
+
+/* BTNS */
+.btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:.75rem;flex-wrap:wrap}
+.btn{padding:8px 18px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'Tahoma',sans-serif;font-weight:500;border:1px solid var(--border)}
 .btn:active{transform:scale(.98)}
 .btn-p{background:var(--azul);color:#fff;border-color:var(--azul)}.btn-p:hover{background:#002d6b}
 .btn-s{background:#fff;color:var(--text)}.btn-s:hover{background:#f3f4f6}
-.btn-danger{background:#fee2e2;color:var(--rojo-t);border-color:#fca5a5}.btn-danger:hover{background:#fecaca}
+.btn-danger{background:#fee2e2;color:var(--rojo-t);border-color:#fca5a5}
 .btn-sm{padding:4px 10px;font-size:11px}
+.btn-print{background:#fff;color:var(--azul);border-color:var(--azul-m)}.btn-print:hover{background:#f0f7ff}
 
-/* FILTROS */
-.filter-row{display:flex;gap:8px;margin-bottom:.85rem;flex-wrap:wrap;align-items:center}
-.filter-row select,.filter-row input{padding:7px 10px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font-family:'Tahoma',sans-serif;outline:none}
-
-/* INFORME */
-.informe-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:2rem;max-width:800px;margin:0 auto}
-.informe-header{text-align:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid var(--azul)}
-.informe-header .inst{font-size:10px;color:var(--azul);font-weight:600;text-transform:uppercase;letter-spacing:1px}
-.informe-header h2{font-size:18px;font-weight:600;color:var(--text);margin:.4rem 0}
-.informe-header .periodo{font-size:12px;color:var(--muted)}
-.informe-section{margin-bottom:1.25rem}
-.informe-section h3{font-size:12px;font-weight:600;color:var(--azul);border-bottom:1px solid var(--azul);padding-bottom:3px;margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.4px}
-.stats-box{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem}
-.stat-item{text-align:center;padding:.7rem;border:1px solid var(--border);border-radius:8px}
-.stat-item .s-val{font-size:20px;font-weight:600}
-.stat-item .s-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
-.firmas-row{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
-.firma-box{text-align:center}
-.firma-line{border-top:1px solid var(--text);padding-top:4px;font-size:11px;margin-top:2.5rem}
-
-/* TOP NC */
-.nc-item{margin-bottom:8px}
-.nc-bar-wrap{height:7px;background:#f3f4f6;border-radius:4px;overflow:hidden;margin-top:3px}
+/* NC BAR */
+.nc-item{margin-bottom:7px}
+.nc-bar-wrap{height:6px;background:#f3f4f6;border-radius:4px;overflow:hidden;margin-top:2px}
 .nc-bar-fill{height:100%;border-radius:4px;background:var(--rojo)}
 
+/* FILTER */
+.filter-row{display:flex;gap:6px;margin-bottom:.75rem;flex-wrap:wrap;align-items:center}
+.filter-row select,.filter-row input{padding:6px 8px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:#fff;font-family:'Tahoma',sans-serif;outline:none}
+
 /* TOAST */
-#toast{position:fixed;bottom:20px;right:20px;background:var(--azul);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;display:none;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--azul);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;display:none;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2)}
 
 /* LOADING */
-#loading{position:fixed;inset:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;z-index:9998;display:none}
-.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--azul);border-radius:50%;animation:spin .7s linear infinite}
+#loading{position:fixed;inset:0;background:rgba(255,255,255,.8);display:none;align-items:center;justify-content:center;z-index:9998}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--azul);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-@media print{
-  .topbar,.nav,.filter-row,.btn-row,.btn,.nav-btn{display:none!important}
-  .page{display:block!important;padding:0}
-  body{background:#fff}
-  .informe-wrap{border:none;box-shadow:none}
+/* ═══════════════════════════════════════════════════
+   IMPRESIÓN — FORMATO ANEXO 5.4
+═══════════════════════════════════════════════════ */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  #auth-screen, .topbar, .nav, .score-live, .btn-row, .btn, .filter-row, #toast, #loading { display: none !important; }
+  body { background: #fff; font-family: Arial, sans-serif; font-size: 10pt; }
+  #app-screen { display: block !important; }
+  .page { display: none !important; padding: 0; margin: 0; }
+  #page-registro.active { display: none !important; }
+  #print-area { display: block !important; }
+  .card { border: none; padding: 0; margin: 0; }
+  .form-grid, .items-list, .sec-header { display: none !important; }
 }
 
-@media(max-width:700px){
+/* PRINT AREA — oculto en pantalla */
+#print-area {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════
+   FORMATO IMPRIMIBLE ANEXO 5.4
+═══════════════════════════════════════════════════ */
+.anexo {
+  font-family: Arial, sans-serif;
+  font-size: 9pt;
+  color: #000;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 10mm;
+}
+.anexo-header {
+  text-align: center;
+  border: 1.5px solid #000;
+  margin-bottom: 0;
+}
+.anexo-header .titulo-principal {
+  background: #003F87;
+  color: #fff;
+  font-size: 10pt;
+  font-weight: bold;
+  padding: 5px 8px;
+  text-align: center;
+}
+.anexo-header .subtitulo {
+  font-size: 8pt;
+  padding: 3px;
+  border-top: 1px solid #000;
+}
+.anexo-section-title {
+  background: #003F87;
+  color: #fff;
+  font-weight: bold;
+  padding: 3px 6px;
+  font-size: 9pt;
+  margin-top: 0;
+}
+.anexo-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.5pt;
+}
+.anexo-tabla td, .anexo-tabla th {
+  border: 0.5px solid #000;
+  padding: 2px 5px;
+  vertical-align: middle;
+}
+.anexo-tabla th {
+  background: #003F87;
+  color: #fff;
+  text-align: center;
+  font-size: 8pt;
+}
+.anexo-tabla .sec-row td {
+  background: #BDD7EE;
+  font-weight: bold;
+  color: #003F87;
+  font-size: 8pt;
+}
+.anexo-tabla .dato-label {
+  width: 55%;
+}
+.col-conf { width: 14%; text-align: center; }
+.col-nc   { width: 14%; text-align: center; }
+.col-na   { width: 14%; text-align: center; }
+.check-x  { font-size: 11pt; font-weight: bold; text-align: center; }
+.subtotal-row td {
+  background: #003F87;
+  color: #fff;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.total-row td {
+  background: #003F87;
+  color: #fff;
+  font-weight: bold;
+  font-size: 9pt;
+}
+.calif-box {
+  border: 1.5px solid #000;
+  margin: 4px 0;
+  padding: 0;
+}
+.calif-box table { margin: 0; }
+.calif-satisf { background: #70AD47; color: #fff; font-weight: bold; text-align: center; padding: 3px; font-size: 9pt; }
+.calif-mejor  { background: #FFD966; color: #7d5a00; font-weight: bold; text-align: center; padding: 3px; font-size: 9pt; }
+.calif-defic  { background: #FF4C4C; color: #fff; font-weight: bold; text-align: center; padding: 3px; font-size: 9pt; }
+.resumen-box { border: 0.5px solid #000; margin-top: 4px; }
+.firmas-box { display: flex; gap: 20px; margin-top: 12mm; }
+.firma-item { flex: 1; text-align: center; border-top: 1px solid #000; padding-top: 4px; font-size: 8pt; }
+.datos-gen-tabla { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+.datos-gen-tabla td { border: 0.5px solid #000; padding: 2px 5px; }
+.datos-gen-tabla .lbl { background: #BDD7EE; font-weight: bold; width: 40%; color: #003F87; }
+.nc-text-area { border: 0.5px solid #000; min-height: 14mm; padding: 3px; font-size: 8pt; }
+.concl-text-area { border: 0.5px solid #000; min-height: 18mm; padding: 3px; font-size: 8pt; }
+
+/* RESPONSIVE */
+@media(max-width:600px){
   .metrics{grid-template-columns:1fr 1fr}
   .charts-row{grid-template-columns:1fr}
-  .items-grid{grid-template-columns:1fr 1fr}
   .form-grid{grid-template-columns:1fr}
+  .item-controls{flex-direction:column;gap:2px}
+  .topbar h1{font-size:12px}
+  .page{padding:.75rem}
+}
+@media(max-width:380px){
+  .metrics{grid-template-columns:1fr 1fr}
+  .btn-c{padding:4px 6px;font-size:10px}
 }
 </style>
 </head>
@@ -152,16 +278,14 @@ tbody tr:last-child td{border-bottom:none}
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">
-      <div style="width:64px;height:64px;background:#003F87;border-radius:12px;margin:0 auto;display:flex;align-items:center;justify-content:center">
-        <span style="color:#fff;font-size:22px;font-weight:700">E</span>
-      </div>
+      <div class="icon">E</div>
       <h2>EsSalud — Auditoría</h2>
       <p>Sistema de Auditoría de Registros Médicos</p>
     </div>
     <label>Correo electrónico</label>
     <input type="email" id="login-email" placeholder="usuario@essalud.gob.pe" autocomplete="username">
     <label>Contraseña</label>
-    <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+    <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
     <button class="btn-auth" onclick="login()">Ingresar</button>
     <div id="auth-error"></div>
   </div>
@@ -170,69 +294,59 @@ tbody tr:last-child td{border-bottom:none}
 <!-- APP -->
 <div id="app-screen">
   <div class="topbar">
-    <div class="topbar-left">
-      <div style="background:rgba(255,255,255,.2);width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px">E</div>
+    <div class="topbar-brand">
+      <div class="ico">E</div>
       <div>
-        <div style="font-size:14px;font-weight:500">Sistema de Auditoría de Registros</div>
-        <div style="font-size:10px;opacity:.7">EsSalud — Centro Quirúrgico</div>
+        <div class="topbar h1" style="font-size:13px;font-weight:500">Auditoría de Registros</div>
+        <div class="sub">EsSalud</div>
       </div>
     </div>
     <div class="topbar-right">
-      <span class="user-badge" id="user-email-badge">—</span>
-      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+      <span class="user-badge" id="user-badge">—</span>
+      <button class="btn-logout" onclick="logout()">Salir</button>
     </div>
   </div>
 
   <nav class="nav">
     <button class="nav-btn active" onclick="goTo('dashboard',this)">Dashboard</button>
-    <button class="nav-btn" onclick="goTo('registro',this)">Registrar auditoría</button>
-    <button class="nav-btn" onclick="goTo('matriz',this)">Matriz de datos</button>
-    <button class="nav-btn" onclick="goTo('informe',this)">Informe mensual</button>
+    <button class="nav-btn" onclick="goTo('registro',this)">Registrar</button>
+    <button class="nav-btn" onclick="goTo('matriz',this)">Matriz</button>
+    <button class="nav-btn" onclick="goTo('informe',this)">Informe</button>
   </nav>
 
   <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
-      <div style="font-size:16px;font-weight:600">Dashboard mensual</div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <select id="mes-filter" onchange="loadDashboard()" style="padding:7px 10px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-family:'Tahoma',sans-serif">
-          <option value="">Todos los meses</option>
-        </select>
-      </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:6px">
+      <div class="page-title" style="margin:0">Dashboard</div>
+      <select id="mes-filter" onchange="loadDashboard()" style="padding:6px 8px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:#fff;font-family:'Tahoma',sans-serif">
+        <option value="">Todos los meses</option>
+      </select>
     </div>
     <div class="metrics" id="metrics"></div>
     <div class="charts-row">
-      <div class="card">
-        <div class="card-title">Tendencia mensual de cumplimiento</div>
-        <div style="position:relative;height:200px"><canvas id="ch-tend"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Distribución de calificaciones</div>
-        <div style="position:relative;height:200px"><canvas id="ch-dist"></canvas></div>
-      </div>
+      <div class="card"><div class="card-title">Tendencia mensual</div><div style="position:relative;height:180px"><canvas id="ch-tend"></canvas></div></div>
+      <div class="card"><div class="card-title">Calificaciones</div><div style="position:relative;height:180px"><canvas id="ch-dist"></canvas></div></div>
     </div>
     <div class="charts-row">
-      <div class="card">
-        <div class="card-title">Promedio por tipo de auditoría</div>
-        <div style="position:relative;height:180px"><canvas id="ch-tipo"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Top 5 ítems con no conformidad</div>
-        <div id="top-nc" style="padding:.25rem 0"></div>
-      </div>
+      <div class="card"><div class="card-title">Por tipo de auditoría</div><div style="position:relative;height:160px"><canvas id="ch-tipo"></canvas></div></div>
+      <div class="card"><div class="card-title">Top 5 ítems con no conformidad</div><div id="top-nc" style="padding:.25rem 0"></div></div>
     </div>
-    <div class="card">
-      <div class="card-title">Ranking por servicio</div>
-      <table id="tbl-srv"><thead><tr><th>Servicio</th><th>N° auditorías</th><th>Prom. puntaje</th><th>% Satisfactorio</th><th>Estado</th></tr></thead><tbody></tbody></table>
+    <div class="card"><div class="card-title">Ranking por servicio</div>
+      <div style="overflow-x:auto"><table id="tbl-srv"><thead><tr><th>Servicio</th><th>N°</th><th>Promedio</th><th>% Satisfact.</th><th>Estado</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
 
   <!-- REGISTRO -->
   <div class="page" id="page-registro">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:6px">
+      <div class="page-title" style="margin:0">Nueva auditoría</div>
+      <button class="btn btn-print" onclick="imprimirActual()" id="btn-imprimir" style="display:none">Imprimir / PDF</button>
+    </div>
+
     <div class="card">
-      <div class="card-title">Nueva auditoría</div>
+      <div class="card-title">Datos generales</div>
       <div class="form-grid">
-        <div class="fg"><label>N° Historia Clínica *</label><input id="f-hc" type="text" placeholder="Ej: 79728"></div>
+        <div class="fg"><label>N° Historia Clínica *</label><input id="f-hc" type="text" placeholder="79728"></div>
         <div class="fg"><label>Fecha de atención *</label><input id="f-fecha" type="date"></div>
         <div class="fg"><label>Servicio auditado *</label>
           <select id="f-servicio">
@@ -248,40 +362,52 @@ tbody tr:last-child td{border-bottom:none}
             <option value="">Seleccionar...</option>
             <option value="CI">Consentimiento Informado</option>
             <option value="CQ">Centro Quirúrgico</option>
-            <option value="OT">Otro formato</option>
           </select>
         </div>
-        <div class="fg"><label>Colegiatura del médico</label><input id="f-cole" type="text" placeholder="Ej: 66076"></div>
-        <div class="fg"><label>Diagnóstico (CIE-10)</label><input id="f-dx" type="text" placeholder="Ej: H26.2 — Catarata complicada"></div>
-        <div class="fg"><label>Número de auditoría</label><input id="f-naud" type="text" placeholder="Ej: 001-2026"></div>
-        <div class="fg"><label>Observaciones</label><input id="f-obs" type="text" placeholder="Opcional"></div>
+        <div class="fg"><label>Colegiatura del médico</label><input id="f-cole" type="text" placeholder="66076"></div>
+        <div class="fg"><label>Diagnóstico (CIE-10)</label><input id="f-dx" type="text" placeholder="H26.2 — Catarata complicada"></div>
+        <div class="fg"><label>N° Auditoría</label><input id="f-naud" type="text" placeholder="001-2026"></div>
+        <div class="fg"><label>Miembros del comité</label><input id="f-comite" type="text" placeholder="Nombre del auditor"></div>
       </div>
-      <div id="items-container"></div>
-      <div class="btn-row">
-        <button class="btn btn-s" onclick="limpiar()">Limpiar</button>
-        <button class="btn btn-p" onclick="guardar()">Guardar auditoría</button>
+    </div>
+
+    <!-- Score en vivo -->
+    <div class="score-live" id="score-live" style="display:none">
+      <div>
+        <div class="lbl">Puntaje actual</div>
+        <div style="display:flex;align-items:baseline;gap:6px">
+          <div class="num" id="score-num">0</div>
+          <div style="font-size:13px;opacity:.8">/ <span id="score-max">100</span></div>
+        </div>
+        <div class="score-bar"><div class="score-bar-fill" id="score-bar" style="width:0%;background:#70AD47"></div></div>
       </div>
+      <div id="score-badge" style="font-size:13px;font-weight:600;padding:6px 14px;border-radius:8px;background:rgba(255,255,255,.15)">—</div>
+    </div>
+
+    <div id="items-container"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-s" onclick="limpiar()">Limpiar</button>
+      <button class="btn btn-p" onclick="guardar()">Guardar auditoría</button>
     </div>
   </div>
 
   <!-- MATRIZ -->
   <div class="page" id="page-matriz">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-wrap:wrap;gap:8px">
-      <div style="font-size:16px;font-weight:600">Matriz de datos</div>
-      <div style="display:flex;gap:6px">
-        <button class="btn btn-s btn-sm" onclick="exportCSV()">Exportar CSV</button>
-      </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:6px">
+      <div class="page-title" style="margin:0">Matriz de datos</div>
+      <button class="btn btn-s btn-sm" onclick="exportCSV()">Exportar CSV</button>
     </div>
     <div class="filter-row">
       <select id="fm-mes"><option value="">Todos los meses</option></select>
-      <select id="fm-tipo"><option value="">Todos los tipos</option><option value="CI">Consentimiento Informado</option><option value="CQ">Centro Quirúrgico</option><option value="OT">Otro</option></select>
-      <select id="fm-calif"><option value="">Todas las calificaciones</option><option value="S">Satisfactorio</option><option value="P">Por mejorar</option><option value="D">Deficiente</option></select>
-      <input id="fm-hc" type="text" placeholder="Buscar por HC..." style="width:160px">
+      <select id="fm-tipo"><option value="">Todos los tipos</option><option value="CI">Consentimiento Informado</option><option value="CQ">Centro Quirúrgico</option></select>
+      <select id="fm-calif"><option value="">Todas</option><option value="S">Satisfactorio</option><option value="P">Por mejorar</option><option value="D">Deficiente</option></select>
+      <input id="fm-hc" type="text" placeholder="Buscar HC..." style="width:120px">
       <button class="btn btn-s btn-sm" onclick="loadMatriz()">Filtrar</button>
     </div>
     <div class="card" style="padding:.5rem;overflow-x:auto">
       <table id="tbl-matriz">
-        <thead><tr><th>HC</th><th>Fecha</th><th>Servicio</th><th>Tipo</th><th>Puntaje</th><th>Calificación</th><th>Colegiatura</th><th>Auditor</th><th></th></tr></thead>
+        <thead><tr><th>HC</th><th>Fecha</th><th>Servicio</th><th>Tipo</th><th>Puntaje</th><th>Calif.</th><th>Acciones</th></tr></thead>
         <tbody id="tbody-matriz"></tbody>
       </table>
     </div>
@@ -289,80 +415,163 @@ tbody tr:last-child td{border-bottom:none}
 
   <!-- INFORME -->
   <div class="page" id="page-informe">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-wrap:wrap;gap:8px">
-      <div style="font-size:16px;font-weight:600">Informe mensual</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:6px">
+      <div class="page-title" style="margin:0">Informe mensual</div>
       <div style="display:flex;gap:6px;align-items:center">
-        <select id="fi-mes" onchange="loadInforme()" style="padding:7px 10px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-family:'Tahoma',sans-serif"><option value="">Seleccionar mes...</option></select>
-        <button class="btn btn-s btn-sm" onclick="window.print()">Imprimir / PDF</button>
+        <select id="fi-mes" onchange="loadInforme()" style="padding:6px 8px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:#fff;font-family:'Tahoma',sans-serif"><option value="">Seleccionar mes...</option></select>
+        <button class="btn btn-print btn-sm" onclick="window.print()">Imprimir PDF</button>
       </div>
     </div>
-    <div class="informe-wrap" id="informe-body">
+    <div class="card" id="informe-body" style="padding:1.25rem">
       <div style="text-align:center;color:var(--muted);padding:2rem;font-size:13px">Seleccionar un mes para generar el informe</div>
     </div>
   </div>
 </div>
 
+<!-- ÁREA DE IMPRESIÓN (visible solo al imprimir) -->
+<div id="print-area"></div>
+
 <div id="toast"></div>
-<div id="loading"><div class="spinner"></div></div>
+<div id="loading" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,.8);align-items:center;justify-content:center;z-index:9998"><div class="spinner"></div></div>
 
 <script>
-// ── CONFIGURACIÓN SUPABASE ────────────────────────────────────────────────────
-// Reemplaza estos dos valores con los de tu proyecto Supabase
 const SUPABASE_URL = 'https://gitnuuningkcbcpkmagy.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_WnXtoQgf05g2TRBcoCVB2w_lVfrswGZ'
-// ─────────────────────────────────────────────────────────────────────────────
-
 const { createClient } = window.supabase
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
 
+// ── DEFINICIÓN DE ÍTEMS ──────────────────────────────────────────────────────
 const ITEMS_CI = [
-  {id:'hc',label:'N° historia clínica',peso:4,sec:'Observaciones'},
-  {id:'fh',label:'Fecha y hora',peso:6,sec:'Observaciones'},
-  {id:'nom',label:'Nombre y apellidos paciente',peso:7,sec:'Observaciones'},
-  {id:'dni',label:'N° DNI paciente',peso:7,sec:'Observaciones'},
-  {id:'nproc',label:'Nombre del procedimiento',peso:7,sec:'Observaciones'},
-  {id:'desc',label:'Descripción sencilla',peso:7,sec:'Observaciones'},
-  {id:'riesgos',label:'Riesgos reales y potenciales',peso:7,sec:'Observaciones'},
-  {id:'ea',label:'Efectos adversos',peso:7,sec:'Observaciones'},
-  {id:'prog',label:'Pronóstico y recomendaciones',peso:7,sec:'Observaciones'},
-  {id:'firma',label:'Firma y sello responsable',peso:7,sec:'Observaciones'},
-  {id:'conf',label:'Conformidad firmada',peso:7,sec:'Observaciones'},
-  {id:'rev-nom',label:'Nombre y apellidos (revoc.)',peso:7,sec:'Revocatoria'},
-  {id:'rev-dni',label:'N° DNI (revoc.)',peso:7,sec:'Revocatoria'},
-  {id:'rev-fh',label:'Fecha y hora (revoc.)',peso:6,sec:'Revocatoria'},
-  {id:'rev-firma',label:'Revocatoria firmada',peso:7,sec:'Revocatoria'},
+  {id:'hc',   label:'Número de historia clínica',                          peso:4,  sec:'Observaciones'},
+  {id:'fh',   label:'Fecha y hora',                                        peso:6,  sec:'Observaciones'},
+  {id:'nom',  label:'Nombre y apellidos del paciente / representante legal',peso:7,  sec:'Observaciones'},
+  {id:'dni',  label:'Número de documento de identidad del paciente / rep.', peso:7,  sec:'Observaciones'},
+  {id:'nproc',label:'Nombre del procedimiento',                            peso:7,  sec:'Observaciones'},
+  {id:'desc', label:'Descripción sencilla',                                peso:7,  sec:'Observaciones'},
+  {id:'riesg',label:'Riesgos reales y potenciales del procedimiento',      peso:7,  sec:'Observaciones'},
+  {id:'ea',   label:'Efectos adversos',                                    peso:7,  sec:'Observaciones'},
+  {id:'prog', label:'Pronóstico y recomendaciones',                        peso:7,  sec:'Observaciones'},
+  {id:'firma',label:'Firma y sello del responsable del procedimiento',     peso:7,  sec:'Observaciones'},
+  {id:'conf', label:'Conformidad firmada',                                 peso:7,  sec:'Observaciones'},
+  {id:'rnom', label:'Nombre y apellidos del paciente / representante legal',peso:7, sec:'Revocatoria', na:true},
+  {id:'rdni', label:'Número de documento de identidad del paciente / rep.', peso:7, sec:'Revocatoria', na:true},
+  {id:'rfh',  label:'Fecha y hora',                                        peso:6,  sec:'Revocatoria', na:true},
+  {id:'rfirm',label:'Revocatoria firmada',                                 peso:7,  sec:'Revocatoria', na:true},
 ]
 const ITEMS_CQ = [
-  {id:'fil-hc',label:'N° historia clínica',peso:0.5,sec:'Filiación'},
-  {id:'fil-nom',label:'Nombres y apellidos',peso:0.5,sec:'Filiación'},
-  {id:'fil-seg',label:'Tipo y N° seguro',peso:0.5,sec:'Filiación'},
-  {id:'fil-nac',label:'Lugar y fecha de nacimiento',peso:0.5,sec:'Filiación'},
-  {id:'ord-diag',label:'Diagnóstico',peso:4,sec:'Orden de Intervención'},
-  {id:'ord-proc',label:'Procedimiento quirúrgico',peso:4,sec:'Orden de Intervención'},
-  {id:'ord-grupo',label:'Grupo sanguíneo / Hb',peso:2,sec:'Orden de Intervención'},
-  {id:'rep-ini',label:'Hora inicio/término cirugía',peso:2,sec:'Reporte Operatorio'},
-  {id:'rep-post',label:'Diagnóstico post operatorio',peso:4,sec:'Reporte Operatorio'},
-  {id:'rep-tec',label:'Técnica / procedimiento',peso:4,sec:'Reporte Operatorio'},
-  {id:'pre-ant',label:'Antecedentes clínicos',peso:2,sec:'Evaluación Preanestésica'},
-  {id:'pre-tipo',label:'Tipo de anestesia prevista',peso:2,sec:'Evaluación Preanestésica'},
-  {id:'anes-tec',label:'Técnica anestésica',peso:2,sec:'Hoja Anestésica'},
-  {id:'anes-med',label:'Medicación administrada',peso:2,sec:'Hoja Anestésica'},
+  {id:'f01',label:'Número de historia clínica',           peso:0.5,sec:'Filiación'},
+  {id:'f02',label:'Nombres y apellidos del paciente',     peso:0.5,sec:'Filiación'},
+  {id:'f03',label:'Tipo y N° Seguro',                     peso:0.5,sec:'Filiación'},
+  {id:'f04',label:'Lugar y fecha de nacimiento',          peso:0.5,sec:'Filiación'},
+  {id:'f05',label:'Edad',                                 peso:0.5,sec:'Filiación'},
+  {id:'f06',label:'Sexo',                                 peso:0.5,sec:'Filiación'},
+  {id:'f07',label:'Domicilio actual',                     peso:0.5,sec:'Filiación'},
+  {id:'f08',label:'Lugar de procedencia',                 peso:0.5,sec:'Filiación'},
+  {id:'f09',label:'Documento de identificación',          peso:0.5,sec:'Filiación'},
+  {id:'f10',label:'Estado civil',                         peso:0.5,sec:'Filiación'},
+  {id:'f11',label:'Grado de instrucción',                 peso:0.5,sec:'Filiación'},
+  {id:'f12',label:'Ocupación',                            peso:0.5,sec:'Filiación'},
+  {id:'f13',label:'Religión',                             peso:0.5,sec:'Filiación'},
+  {id:'f14',label:'Teléfono',                             peso:0.5,sec:'Filiación'},
+  {id:'f15',label:'Acompañante',                          peso:0.5,sec:'Filiación'},
+  {id:'f16',label:'Domicilio y teléfono persona responsable',peso:0.5,sec:'Filiación'},
+  {id:'f17',label:'Fecha de ingreso',                     peso:0.5,sec:'Filiación'},
+  {id:'f18',label:'Fecha de elaboración de historia clínica',peso:0.5,sec:'Filiación'},
+  {id:'o01',label:'Fecha y hora de solicitud',            peso:0.5,sec:'Orden de Intervención Quirúrgica'},
+  {id:'o02',label:'Nombres y apellidos',                  peso:2,  sec:'Orden de Intervención Quirúrgica'},
+  {id:'o03',label:'Número de Historia Clínica',           peso:0.5,sec:'Orden de Intervención Quirúrgica'},
+  {id:'o04',label:'Edad',                                 peso:0.5,sec:'Orden de Intervención Quirúrgica'},
+  {id:'o05',label:'Sexo',                                 peso:0.5,sec:'Orden de Intervención Quirúrgica'},
+  {id:'o06',label:'Diagnóstico',                          peso:4,  sec:'Orden de Intervención Quirúrgica'},
+  {id:'o07',label:'Procedimiento quirúrgico',             peso:4,  sec:'Orden de Intervención Quirúrgica'},
+  {id:'o08',label:'Fecha de programación',                peso:0.5,sec:'Orden de Intervención Quirúrgica'},
+  {id:'o09',label:'Nombres y apellidos del médico cirujano',peso:1,sec:'Orden de Intervención Quirúrgica'},
+  {id:'o10',label:'Nombres y apellidos del primer ayudante',peso:0.5,sec:'Orden de Intervención Quirúrgica'},
+  {id:'o11',label:'Grupo sanguíneo, hemoglobina',         peso:2,  sec:'Orden de Intervención Quirúrgica'},
+  {id:'o12',label:'Tipo de anestesia prevista',           peso:2,  sec:'Orden de Intervención Quirúrgica'},
+  {id:'o13',label:'Firma y sello del médico cirujano',    peso:0.5,sec:'Orden de Intervención Quirúrgica'},
+  {id:'o14',label:'Firma y sello del jefe de servicio',   peso:0.5,sec:'Orden de Intervención Quirúrgica'},
+  {id:'r01',label:'Nombres y apellidos',                  peso:2,  sec:'Reporte Operatorio'},
+  {id:'r02',label:'Número de Historia Clínica',           peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r03',label:'Edad',                                 peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r04',label:'Sexo',                                 peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r05',label:'Servicio',                             peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r06',label:'Número de cama',                       peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r07',label:'Tipo de anestesia empleada',           peso:2,  sec:'Reporte Operatorio'},
+  {id:'r08',label:'Fecha de intervención quirúrgica',     peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r09',label:'Hora de inicio y término de la intervención',peso:2,sec:'Reporte Operatorio'},
+  {id:'r10',label:'Tiempo operatorio',                    peso:2,  sec:'Reporte Operatorio'},
+  {id:'r11',label:'Diagnóstico pre operatorio',           peso:4,  sec:'Reporte Operatorio'},
+  {id:'r12',label:'Diagnóstico post operatorio',          peso:4,  sec:'Reporte Operatorio'},
+  {id:'r13',label:'Descripción de la técnica / procedimiento',peso:4,sec:'Reporte Operatorio'},
+  {id:'r14',label:'Hallazgos operatorios',                peso:4,  sec:'Reporte Operatorio'},
+  {id:'r15',label:'Complicaciones durante la intervención',peso:2, sec:'Reporte Operatorio'},
+  {id:'r16',label:'Nombres y apellidos del cirujano',     peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r17',label:'Nombres y apellidos del primer/segundo ayudante',peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r18',label:'Nombres y apellidos del anestesiólogo',peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r19',label:'Nombres y apellidos de enfermera instrumentista',peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r20',label:'Estado y destino del paciente al salir del quirófano',peso:0.5,sec:'Reporte Operatorio'},
+  {id:'r21',label:'Indicación de examen anatomopatológico/bacteriológico',peso:1,sec:'Reporte Operatorio'},
+  {id:'r22',label:'Firma y sello del médico que realiza el informe',peso:0.5,sec:'Reporte Operatorio'},
+  {id:'p01',label:'Nombres y apellidos',                  peso:2,  sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p02',label:'Número de Historia Clínica',           peso:0.5,sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p03',label:'Edad',                                 peso:0.5,sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p04',label:'Sexo',                                 peso:0.5,sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p05',label:'Servicio',                             peso:0.5,sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p06',label:'Número de cama',                       peso:0.5,sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p07',label:'Antecedentes clínicos',                peso:2,  sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p08',label:'Resumen de enfermedad actual',         peso:2,  sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p09',label:'Datos importantes de examen físico',   peso:2,  sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p10',label:'Tipo de anestesia prevista',           peso:2,  sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p11',label:'Riesgo anestesiológico',               peso:2,  sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p12',label:'Conclusiones',                         peso:2,  sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p13',label:'Fecha y hora',                         peso:1,  sec:'Hoja de Evaluación Preanestésica'},
+  {id:'p14',label:'Firma y sello del anestesiólogo',      peso:0.5,sec:'Hoja de Evaluación Preanestésica'},
+  {id:'a01',label:'Nombres y apellidos',                  peso:2,  sec:'Hoja Anestésica'},
+  {id:'a02',label:'Número de Historia Clínica',           peso:0.5,sec:'Hoja Anestésica'},
+  {id:'a03',label:'Edad',                                 peso:0.5,sec:'Hoja Anestésica'},
+  {id:'a04',label:'Sexo',                                 peso:0.5,sec:'Hoja Anestésica'},
+  {id:'a05',label:'Servicio',                             peso:0.5,sec:'Hoja Anestésica'},
+  {id:'a06',label:'Número de cama',                       peso:0.5,sec:'Hoja Anestésica'},
+  {id:'a07',label:'Diagnóstico pre y post operatorio',    peso:2,  sec:'Hoja Anestésica'},
+  {id:'a08',label:'Medicación pre anestésica utilizada',  peso:2,  sec:'Hoja Anestésica'},
+  {id:'a09',label:'Resumen de la valoración preoperatoria',peso:2, sec:'Hoja Anestésica'},
+  {id:'a10',label:'Hora de inicio y fin de la anestesia', peso:1,  sec:'Hoja Anestésica'},
+  {id:'a11',label:'Descripción de la técnica anestésica', peso:2,  sec:'Hoja Anestésica'},
+  {id:'a12',label:'Medicación administrada',              peso:2,  sec:'Hoja Anestésica'},
+  {id:'a13',label:'Gráfica de constantes vitales',        peso:1,  sec:'Hoja Anestésica'},
+  {id:'a14',label:'Balance hídrico',                      peso:1,  sec:'Hoja Anestésica'},
+  {id:'a15',label:'Estado clínico del paciente',          peso:1,  sec:'Hoja Anestésica'},
+  {id:'a16',label:'Fecha y hora',                         peso:1,  sec:'Hoja Anestésica'},
+  {id:'a17',label:'Firma y sello del anestesiólogo',      peso:0.5,sec:'Hoja Anestésica'},
+  {id:'h01',label:'Nombres y apellidos',                  peso:0.5,sec:'Hoja Post Anestésica'},
+  {id:'h02',label:'Número de Historia Clínica',           peso:0.5,sec:'Hoja Post Anestésica'},
+  {id:'h03',label:'Edad',                                 peso:0.5,sec:'Hoja Post Anestésica'},
+  {id:'h04',label:'Sexo',                                 peso:0.5,sec:'Hoja Post Anestésica'},
+  {id:'h05',label:'Servicio',                             peso:0.5,sec:'Hoja Post Anestésica'},
+  {id:'h06',label:'Número de cama',                       peso:0.5,sec:'Hoja Post Anestésica'},
+  {id:'h07',label:'Fecha y hora de ingreso y egreso',     peso:0.5,sec:'Hoja Post Anestésica'},
+  {id:'h08',label:'Registro de monitoreo de funciones vitales',peso:1,sec:'Hoja Post Anestésica'},
+  {id:'h09',label:'Condición de ingreso y recuperación',  peso:1,  sec:'Hoja Post Anestésica'},
+  {id:'h10',label:'Anotación de evolución',               peso:1,  sec:'Hoja Post Anestésica'},
+  {id:'h11',label:'Balance hídrico',                      peso:1,  sec:'Hoja Post Anestésica'},
+  {id:'h12',label:'Tratamiento administrado',             peso:2,  sec:'Hoja Post Anestésica'},
+  {id:'h13',label:'Condición de egreso',                  peso:1,  sec:'Hoja Post Anestésica'},
+  {id:'h14',label:'Firma y sello del anestesiólogo',      peso:0.5,sec:'Hoja Post Anestésica'},
 ]
 const ALL_ITEMS = [...ITEMS_CI,...ITEMS_CQ]
-const TIPO_LABEL = {CI:'Consentimiento Informado',CQ:'Centro Quirúrgico',OT:'Otro'}
-const MESES_LABEL = {'01':'Enero','02':'Febrero','03':'Marzo','04':'Abril','05':'Mayo','06':'Junio','07':'Julio','08':'Agosto','09':'Septiembre','10':'Octubre','11':'Noviembre','12':'Diciembre'}
+const TIPO_LABEL = {CI:'Consentimiento Informado',CQ:'Centro Quirúrgico'}
+const MESES = {'01':'Enero','02':'Febrero','03':'Marzo','04':'Abril','05':'Mayo','06':'Junio','07':'Julio','08':'Agosto','09':'Septiembre','10':'Octubre','11':'Noviembre','12':'Diciembre'}
 
-let currentUser = null
-let allData = []
-let charts = {}
+let currentUser=null, allData=[], charts={}, itemState={}
 
 function loading(v){document.getElementById('loading').style.display=v?'flex':'none'}
-function toast(msg,dur=2500){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',dur)}
+function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',dur)}
 function calcCalif(p){return p>=90?'S':p>=75?'P':'D'}
 function califLabel(c){return c==='S'?'Satisfactorio':c==='P'?'Por mejorar':'Deficiente'}
 function badge(c){return c==='S'?`<span class="badge b-green"><span class="dot d-g"></span>Satisfactorio</span>`:c==='P'?`<span class="badge b-yellow"><span class="dot d-y"></span>Por mejorar</span>`:`<span class="badge b-red"><span class="dot d-r"></span>Deficiente</span>`}
 function dotClass(p){return p>=90?'d-g':p>=75?'d-y':'d-r'}
-function mesLabel(m){if(!m)return '';const[y,mo]=m.split('-');return (MESES_LABEL[mo]||mo)+' '+y}
+function mesLabel(m){if(!m)return '';const[y,mo]=m.split('-');return(MESES[mo]||mo)+' '+y}
 
 async function login(){
   const email=document.getElementById('login-email').value.trim()
@@ -373,7 +582,7 @@ async function login(){
   loading(true)
   const{data,error}=await sb.auth.signInWithPassword({email,password:pass})
   loading(false)
-  if(error){err.textContent='Credenciales incorrectas. Verificar.';return}
+  if(error){err.textContent='Credenciales incorrectas.';return}
   currentUser=data.user
   initApp()
 }
@@ -388,122 +597,124 @@ async function logout(){
 async function initApp(){
   document.getElementById('auth-screen').style.display='none'
   document.getElementById('app-screen').style.display='block'
-  document.getElementById('user-email-badge').textContent=currentUser.email
+  document.getElementById('user-badge').textContent=currentUser.email
   document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0]
   loading(true)
   const{data,error}=await sb.from('auditorias').select('*').order('fecha',{ascending:false})
   loading(false)
-  if(error){toast('Error al cargar datos: '+error.message);return}
+  if(error){toast('Error al cargar: '+error.message);return}
   allData=data||[]
-  populateMesSelects()
+  populateMeses()
   loadDashboard()
 }
 
-function populateMesSelects(){
+function populateMeses(){
   const meses=[...new Set(allData.map(d=>d.mes))].filter(Boolean).sort().reverse()
-  const selects=['mes-filter','fm-mes','fi-mes']
-  selects.forEach(id=>{
+  ;['mes-filter','fm-mes','fi-mes'].forEach(id=>{
     const sel=document.getElementById(id)
     const cur=sel.value
-    sel.innerHTML=id==='fi-mes'?'<option value="">Seleccionar mes...</option>':'<option value="">Todos los meses</option>'
-    meses.forEach(m=>{
-      const opt=document.createElement('option')
-      opt.value=m;opt.textContent=mesLabel(m)
-      sel.appendChild(opt)
-    })
+    const first=sel.options[0].outerHTML
+    sel.innerHTML=first
+    meses.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=mesLabel(m);sel.appendChild(o)})
     if(cur)sel.value=cur
   })
 }
 
-function getMes(){return document.getElementById('mes-filter').value}
-
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
 function loadDashboard(){
-  const mes=getMes()
+  const mes=document.getElementById('mes-filter').value
   const data=mes?allData.filter(d=>d.mes===mes):allData
   const total=data.length
   const prom=total?Math.round(data.reduce((a,b)=>a+b.puntaje,0)/total):0
   const sat=data.filter(d=>d.calif==='S').length
   const def=data.filter(d=>d.calif==='D').length
   const pm=data.filter(d=>d.calif==='P').length
-
-  const mesCur=mes||null
   const allMeses=[...new Set(allData.map(d=>d.mes))].filter(Boolean).sort()
-  const idxCur=mesCur?allMeses.indexOf(mesCur):-1
+  const idxCur=mes?allMeses.indexOf(mes):-1
   let diff=null
-  if(idxCur>0){
-    const prev=allData.filter(d=>d.mes===allMeses[idxCur-1])
-    if(prev.length){const pp=Math.round(prev.reduce((a,b)=>a+b.puntaje,0)/prev.length);diff=prom-pp}
-  }
+  if(idxCur>0){const prev=allData.filter(d=>d.mes===allMeses[idxCur-1]);if(prev.length){diff=prom-Math.round(prev.reduce((a,b)=>a+b.puntaje,0)/prev.length)}}
 
   document.getElementById('metrics').innerHTML=`
     <div class="metric"><div class="lbl">Auditorías</div><div class="val">${total}</div><div class="sub">en el período</div></div>
-    <div class="metric"><div class="lbl">Puntaje promedio</div><div class="val">${prom}<small style="font-size:14px">/100</small></div><div class="sub" style="color:${diff===null?'var(--muted)':diff>=0?'var(--verde-t)':'var(--rojo-t)'}">${diff===null?'—':diff>=0?'▲ +'+diff+' vs mes ant.':'▼ '+diff+' vs mes ant.'}</div></div>
-    <div class="metric" style="border-top-color:var(--verde)"><div class="lbl">Satisfactorios</div><div class="val" style="color:var(--verde-t)">${total?Math.round(sat/total*100):0}%</div><div class="sub">${sat} de ${total}</div></div>
-    <div class="metric" style="border-top-color:var(--rojo)"><div class="lbl">Deficientes</div><div class="val" style="color:var(--rojo-t)">${def}</div><div class="sub">${total?Math.round(def/total*100):0}% del total</div></div>
+    <div class="metric"><div class="lbl">Promedio</div><div class="val">${prom}<small style="font-size:13px">/100</small></div><div class="sub" style="color:${diff===null?'var(--muted)':diff>=0?'var(--verde-t)':'var(--rojo-t)'}">${diff===null?'—':diff>=0?'▲ +'+diff:' ▼ '+diff}</div></div>
+    <div class="metric" style="border-top-color:var(--verde)"><div class="lbl">Satisfact.</div><div class="val" style="color:var(--verde-t)">${total?Math.round(sat/total*100):0}%</div><div class="sub">${sat} casos</div></div>
+    <div class="metric" style="border-top-color:var(--rojo)"><div class="lbl">Deficientes</div><div class="val" style="color:var(--rojo-t)">${def}</div><div class="sub">${total?Math.round(def/total*100):0}%</div></div>
   `
-
-  const mesesAll=allMeses.slice(-6)
-  const promediosMes=mesesAll.map(m=>{const d=allData.filter(x=>x.mes===m);return d.length?Math.round(d.reduce((a,b)=>a+b.puntaje,0)/d.length):null})
+  const mesesLast=allMeses.slice(-6)
+  const promMes=mesesLast.map(m=>{const d=allData.filter(x=>x.mes===m);return d.length?Math.round(d.reduce((a,b)=>a+b.puntaje,0)/d.length):null})
   if(charts.tend)charts.tend.destroy()
-  charts.tend=new Chart(document.getElementById('ch-tend'),{
-    type:'line',
-    data:{labels:mesesAll.map(mesLabel),datasets:[{data:promediosMes,borderColor:'#003F87',backgroundColor:'rgba(0,63,135,.07)',tension:.35,pointBackgroundColor:'#003F87',pointRadius:4,fill:true,spanGaps:true}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}},grid:{display:false}}}}
-  })
-
+  charts.tend=new Chart(document.getElementById('ch-tend'),{type:'line',data:{labels:mesesLast.map(mesLabel),datasets:[{data:promMes,borderColor:'#003F87',backgroundColor:'rgba(0,63,135,.07)',tension:.35,pointBackgroundColor:'#003F87',pointRadius:4,fill:true,spanGaps:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}},grid:{display:false}}}}})
   if(charts.dist)charts.dist.destroy()
-  charts.dist=new Chart(document.getElementById('ch-dist'),{
-    type:'doughnut',
-    data:{labels:['Satisfactorio','Por mejorar','Deficiente'],datasets:[{data:[sat,pm,def],backgroundColor:['#70AD47','#FFD966','#FF4C4C'],borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:8}}}}
-  })
-
-  const tipos=['CI','CQ']
-  const promTipo=tipos.map(t=>{const d=data.filter(x=>x.tipo===t);return d.length?Math.round(d.reduce((a,b)=>a+b.puntaje,0)/d.length):0})
+  charts.dist=new Chart(document.getElementById('ch-dist'),{type:'doughnut',data:{labels:['Satisfactorio','Por mejorar','Deficiente'],datasets:[{data:[sat,pm,def],backgroundColor:['#70AD47','#FFD966','#FF4C4C'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:8}}}}})
+  const promTipo=['CI','CQ'].map(t=>{const d=data.filter(x=>x.tipo===t);return d.length?Math.round(d.reduce((a,b)=>a+b.puntaje,0)/d.length):0})
   if(charts.tipo)charts.tipo.destroy()
-  charts.tipo=new Chart(document.getElementById('ch-tipo'),{
-    type:'bar',
-    data:{labels:['Consentimiento Informado','Centro Quirúrgico'],datasets:[{data:promTipo,backgroundColor:['#0070C0','#003F87'],borderRadius:5,borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}},grid:{display:false}}}}
-  })
-
+  charts.tipo=new Chart(document.getElementById('ch-tipo'),{type:'bar',data:{labels:['Cons. Informado','Centro Quirúrgico'],datasets:[{data:promTipo,backgroundColor:['#0070C0','#003F87'],borderRadius:5,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}},grid:{display:false}}}}})
   const ncCount={}
-  data.forEach(d=>{if(!d.items)return;Object.entries(d.items).forEach(([k,v])=>{if(v==='NC'){ncCount[k]=(ncCount[k]||0)+1}})})
+  data.forEach(d=>{if(!d.items)return;Object.entries(d.items).forEach(([k,v])=>{if(v==='NC')ncCount[k]=(ncCount[k]||0)+1})})
   const sorted=Object.entries(ncCount).sort((a,b)=>b[1]-a[1]).slice(0,5)
-  document.getElementById('top-nc').innerHTML=sorted.length?sorted.map(([id,cnt])=>{
-    const it=ALL_ITEMS.find(x=>x.id===id)
-    const pct=total?Math.round(cnt/total*100):0
-    return `<div class="nc-item"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="color:var(--text);max-width:75%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${it?it.label:id}</span><span style="color:var(--rojo-t);font-weight:600;flex-shrink:0">${cnt} (${pct}%)</span></div><div class="nc-bar-wrap"><div class="nc-bar-fill" style="width:${pct}%"></div></div></div>`
-  }).join(''):'<div style="color:var(--muted);font-size:12px;padding:.5rem 0">Sin no conformidades en este período</div>'
-
-  const servMap={}
-  data.forEach(d=>{if(!servMap[d.servicio])servMap[d.servicio]={n:0,pts:[],sat:0};servMap[d.servicio].n++;servMap[d.servicio].pts.push(d.puntaje);if(d.calif==='S')servMap[d.servicio].sat++})
-  document.querySelector('#tbl-srv tbody').innerHTML=Object.entries(servMap).map(([s,v])=>{
-    const p=Math.round(v.pts.reduce((a,b)=>a+b,0)/v.pts.length)
-    const psat=Math.round(v.sat/v.n*100)
-    return `<tr><td style="font-weight:500">${s}</td><td style="text-align:center">${v.n}</td><td><span class="dot ${dotClass(p)}" style="margin-right:5px"></span>${p}/100</td><td style="text-align:center">${psat}%</td><td>${badge(calcCalif(p))}</td></tr>`
-  }).sort((a,b)=>b.localeCompare(a)).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1rem">Sin datos</td></tr>'
+  document.getElementById('top-nc').innerHTML=sorted.length?sorted.map(([id,cnt])=>{const it=ALL_ITEMS.find(x=>x.id===id);const pct=total?Math.round(cnt/total*100):0;return `<div class="nc-item"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:74%">${it?it.label:id}</span><span style="color:var(--rojo-t);font-weight:600;flex-shrink:0">${cnt} (${pct}%)</span></div><div class="nc-bar-wrap"><div class="nc-bar-fill" style="width:${pct}%"></div></div></div>`}).join(''):'<div style="color:var(--muted);font-size:12px">Sin no conformidades</div>'
+  const srv={}
+  data.forEach(d=>{if(!srv[d.servicio])srv[d.servicio]={n:0,pts:[],sat:0};srv[d.servicio].n++;srv[d.servicio].pts.push(d.puntaje);if(d.calif==='S')srv[d.servicio].sat++})
+  document.querySelector('#tbl-srv tbody').innerHTML=Object.entries(srv).map(([s,v])=>{const p=Math.round(v.pts.reduce((a,b)=>a+b,0)/v.pts.length);return `<tr><td style="font-weight:500">${s}</td><td style="text-align:center">${v.n}</td><td><span class="dot ${dotClass(p)}" style="margin-right:4px"></span>${p}/100</td><td style="text-align:center">${Math.round(v.sat/v.n*100)}%</td><td>${badge(calcCalif(p))}</td></tr>`}).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1rem">Sin datos</td></tr>'
 }
 
+// ── REGISTRO ──────────────────────────────────────────────────────────────────
 function renderItems(){
   const tipo=document.getElementById('f-tipo').value
   const cont=document.getElementById('items-container')
-  if(!tipo){cont.innerHTML='';return}
-  const items=tipo==='CI'?ITEMS_CI:tipo==='CQ'?ITEMS_CQ:[]
-  if(!items.length){cont.innerHTML='<div class="sec-header">Puntaje manual</div><div class="fg" style="max-width:200px"><label>Puntaje obtenido (0–100)</label><input type="number" id="item-manual" min="0" max="100" value="100"></div>';return}
-  const secciones=[...new Set(items.map(x=>x.sec))]
-  cont.innerHTML=secciones.map(sec=>`
+  document.getElementById('score-live').style.display=tipo?'flex':'none'
+  document.getElementById('btn-imprimir').style.display='none'
+  if(!tipo){cont.innerHTML='';itemState={};return}
+  const items=tipo==='CI'?ITEMS_CI:ITEMS_CQ
+  itemState={}
+  items.forEach(it=>itemState[it.id]=it.na?'NA':'C')
+  const secs=[...new Set(items.map(x=>x.sec))]
+  cont.innerHTML=secs.map(sec=>`
     <div class="sec-header">${sec}</div>
-    <div class="items-grid">
+    <div class="items-list">
       ${items.filter(it=>it.sec===sec).map(it=>`
-        <label class="item-row">
-          <input type="checkbox" id="item-${it.id}" checked>
-          <span>${it.label}</span>
-          <span class="pts">${it.peso}pts</span>
-        </label>
+        <div class="item-row conforme" id="row-${it.id}">
+          <span class="item-label">${it.label}</span>
+          <span class="item-pts">${it.peso}pts</span>
+          <div class="item-controls">
+            <button class="btn-c c active" onclick="setItem('${it.id}','C')">C</button>
+            <button class="btn-c nc" onclick="setItem('${it.id}','NC')">NC</button>
+            ${it.na?`<button class="btn-c na ${it.na?'active':''}" onclick="setItem('${it.id}','NA')">NA</button>`:''}
+          </div>
+        </div>
       `).join('')}
     </div>
   `).join('')
+  updateScore()
+}
+
+function setItem(id,val){
+  itemState[id]=val
+  const row=document.getElementById('row-'+id)
+  row.className='item-row'+(val==='C'?' conforme':val==='NC'?' noconforme':'')
+  const btns=row.querySelectorAll('.btn-c')
+  btns.forEach(b=>{
+    b.classList.remove('active')
+    if((val==='C'&&b.classList.contains('c'))||(val==='NC'&&b.classList.contains('nc'))||(val==='NA'&&b.classList.contains('na')))b.classList.add('active')
+  })
+  updateScore()
+}
+
+function updateScore(){
+  const tipo=document.getElementById('f-tipo').value
+  const items=tipo==='CI'?ITEMS_CI:ITEMS_CQ
+  const maxPts=items.filter(it=>itemState[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
+  const obtPts=items.filter(it=>itemState[it.id]==='C').reduce((a,b)=>a+b.peso,0)
+  const pct=maxPts>0?Math.round(obtPts/maxPts*100):0
+  const calif=calcCalif(pct)
+  document.getElementById('score-num').textContent=Math.round(obtPts)
+  document.getElementById('score-max').textContent=Math.round(maxPts)
+  const bar=document.getElementById('score-bar')
+  bar.style.width=pct+'%'
+  bar.style.background=calif==='S'?'#70AD47':calif==='P'?'#FFD966':'#FF4C4C'
+  const sb2=document.getElementById('score-badge')
+  sb2.textContent=califLabel(calif)+' ('+pct+'%)'
+  sb2.style.background=calif==='S'?'rgba(112,173,71,.25)':calif==='P'?'rgba(255,217,102,.25)':'rgba(255,76,76,.25)'
 }
 
 async function guardar(){
@@ -511,49 +722,45 @@ async function guardar(){
   const fecha=document.getElementById('f-fecha').value
   const servicio=document.getElementById('f-servicio').value
   const tipo=document.getElementById('f-tipo').value
-  const cole=document.getElementById('f-cole').value.trim()
-  const dx=document.getElementById('f-dx').value.trim()
-  const naud=document.getElementById('f-naud').value.trim()
-  const obs=document.getElementById('f-obs').value.trim()
   if(!hc||!fecha||!servicio||!tipo){toast('Completar: HC, fecha, servicio y tipo.');return}
-
-  const items=tipo==='CI'?ITEMS_CI:tipo==='CQ'?ITEMS_CQ:[]
-  const itemsConf={}
-  let puntaje=0
-
-  if(tipo==='OT'){
-    const m=document.getElementById('item-manual')
-    puntaje=m?Math.min(100,Math.max(0,parseInt(m.value)||0)):0
-  } else {
-    items.forEach(it=>{
-      const el=document.getElementById('item-'+it.id)
-      const conf=el?el.checked:false
-      itemsConf[it.id]=conf?'C':'NC'
-      if(conf)puntaje+=it.peso
-    })
-    puntaje=Math.round(puntaje)
+  const items=tipo==='CI'?ITEMS_CI:ITEMS_CQ
+  const maxPts=items.filter(it=>itemState[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
+  const obtPts=items.filter(it=>itemState[it.id]==='C').reduce((a,b)=>a+b.peso,0)
+  const puntaje=maxPts>0?Math.round(obtPts/maxPts*100):0
+  const row={
+    hc,fecha,servicio,tipo,puntaje,calif:calcCalif(puntaje),
+    cole:document.getElementById('f-cole').value.trim(),
+    dx:document.getElementById('f-dx').value.trim(),
+    naud:document.getElementById('f-naud').value.trim(),
+    comite:document.getElementById('f-comite').value.trim(),
+    mes:fecha.substring(0,7),
+    items:{...itemState},
+    auditor:currentUser.email,
+    user_id:currentUser.id
   }
-
-  const mes=fecha.substring(0,7)
-  const row={hc,fecha,servicio,tipo,puntaje,calif:calcCalif(puntaje),cole,dx,naud,obs,mes,items:itemsConf,user_id:currentUser.id,auditor:currentUser.email}
   loading(true)
   const{data,error}=await sb.from('auditorias').insert([row]).select()
   loading(false)
-  if(error){toast('Error al guardar: '+error.message);return}
+  if(error){toast('Error: '+error.message);return}
   allData.unshift(data[0])
-  populateMesSelects()
-  toast(`Auditoría guardada · HC ${hc} · ${puntaje}/100`)
-  limpiar()
+  populateMeses()
+  toast('Auditoría guardada · HC '+hc+' · '+puntaje+'/100')
+  document.getElementById('btn-imprimir').style.display='block'
+  window._lastSaved=data[0]
 }
 
 function limpiar(){
-  ['f-hc','f-cole','f-dx','f-naud','f-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})
+  ['f-hc','f-cole','f-dx','f-naud','f-comite'].forEach(id=>document.getElementById(id).value='')
   document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0]
   document.getElementById('f-servicio').selectedIndex=0
   document.getElementById('f-tipo').selectedIndex=0
   document.getElementById('items-container').innerHTML=''
+  document.getElementById('score-live').style.display='none'
+  document.getElementById('btn-imprimir').style.display='none'
+  itemState={}
 }
 
+// ── MATRIZ ────────────────────────────────────────────────────────────────────
 function loadMatriz(){
   const mes=document.getElementById('fm-mes').value
   const tipo=document.getElementById('fm-tipo').value
@@ -568,15 +775,16 @@ function loadMatriz(){
     <tr>
       <td style="font-weight:500">${d.hc}</td>
       <td>${d.fecha}</td>
-      <td>${d.servicio||'—'}</td>
-      <td style="font-size:11px">${TIPO_LABEL[d.tipo]||d.tipo}</td>
-      <td><span class="dot ${dotClass(d.puntaje)}" style="margin-right:5px"></span>${d.puntaje}/100</td>
+      <td style="font-size:11px">${d.servicio||'—'}</td>
+      <td style="font-size:10px">${TIPO_LABEL[d.tipo]||d.tipo}</td>
+      <td><span class="dot ${dotClass(d.puntaje)}" style="margin-right:4px"></span>${d.puntaje}/100</td>
       <td>${badge(d.calif)}</td>
-      <td>${d.cole||'—'}</td>
-      <td style="font-size:11px">${d.auditor||'—'}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="eliminar('${d.id}')">Eliminar</button></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-print btn-sm" onclick="imprimirRegistro('${d.id}')">PDF</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminar('${d.id}')">✕</button>
+      </td>
     </tr>
-  `).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:1.5rem">Sin registros con esos filtros</td></tr>'
+  `).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:1rem">Sin registros</td></tr>'
 }
 
 async function eliminar(id){
@@ -598,58 +806,151 @@ function exportCSV(){
   toast('CSV descargado')
 }
 
+// ── INFORME ───────────────────────────────────────────────────────────────────
 function loadInforme(){
   const mes=document.getElementById('fi-mes').value
   const data=mes?allData.filter(d=>d.mes===mes):[]
   const body=document.getElementById('informe-body')
-  if(!mes){body.innerHTML='<div style="text-align:center;color:var(--muted);padding:2rem;font-size:13px">Seleccionar un mes para generar el informe</div>';return}
-  const total=data.length
-  const prom=total?Math.round(data.reduce((a,b)=>a+b.puntaje,0)/total):0
-  const sat=data.filter(d=>d.calif==='S').length
-  const pm=data.filter(d=>d.calif==='P').length
-  const df=data.filter(d=>d.calif==='D').length
-
+  if(!mes){body.innerHTML='<div style="text-align:center;color:var(--muted);padding:2rem">Seleccionar un mes</div>';return}
+  const total=data.length,prom=total?Math.round(data.reduce((a,b)=>a+b.puntaje,0)/total):0
+  const sat=data.filter(d=>d.calif==='S').length,pm=data.filter(d=>d.calif==='P').length,df=data.filter(d=>d.calif==='D').length
   body.innerHTML=`
-    <div class="informe-header">
-      <div class="inst">Seguro Social de Salud del Perú — EsSalud</div>
-      <h2>Informe de Auditoría de Registros Médicos</h2>
-      <div class="periodo">Período: ${mesLabel(mes)} · Comité de Auditoría de Calidad</div>
+    <div style="text-align:center;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:2px solid var(--azul)">
+      <div style="font-size:10px;color:var(--azul);font-weight:600;text-transform:uppercase;letter-spacing:1px">Seguro Social de Salud del Perú — EsSalud</div>
+      <div style="font-size:17px;font-weight:600;margin:.3rem 0">Informe de Auditoría de Registros Médicos</div>
+      <div style="font-size:12px;color:var(--muted)">Período: ${mesLabel(mes)}</div>
     </div>
-    <div class="informe-section">
-      <h3>I. Resumen ejecutivo</h3>
-      <div class="stats-box">
-        <div class="stat-item"><div class="s-val" style="color:var(--azul)">${total}</div><div class="s-lbl">Auditorías</div></div>
-        <div class="stat-item"><div class="s-val" style="color:${prom>=90?'var(--verde-t)':prom>=75?'var(--amarillo-t)':'var(--rojo-t)'}">${prom}/100</div><div class="s-lbl">Promedio</div></div>
-        <div class="stat-item"><div class="s-val" style="color:var(--verde-t)">${sat}</div><div class="s-lbl">Satisfactorios</div></div>
-        <div class="stat-item"><div class="s-val" style="color:var(--rojo-t)">${df}</div><div class="s-lbl">Deficientes</div></div>
-      </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem">
+      <div style="text-align:center;padding:.65rem;border:1px solid var(--border);border-radius:8px"><div style="font-size:18px;font-weight:600;color:var(--azul)">${total}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase">Auditorías</div></div>
+      <div style="text-align:center;padding:.65rem;border:1px solid var(--border);border-radius:8px"><div style="font-size:18px;font-weight:600;color:${prom>=90?'var(--verde-t)':prom>=75?'var(--amarillo-t)':'var(--rojo-t)'}">${prom}/100</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase">Promedio</div></div>
+      <div style="text-align:center;padding:.65rem;border:1px solid var(--border);border-radius:8px"><div style="font-size:18px;font-weight:600;color:var(--verde-t)">${sat}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase">Satisfactorios</div></div>
+      <div style="text-align:center;padding:.65rem;border:1px solid var(--border);border-radius:8px"><div style="font-size:18px;font-weight:600;color:var(--rojo-t)">${df}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase">Deficientes</div></div>
     </div>
-    <div class="informe-section">
-      <h3>II. Distribución de calificaciones</h3>
-      <table><thead><tr><th>Calificación</th><th>Criterio</th><th style="text-align:center">N°</th><th style="text-align:center">%</th></tr></thead>
-      <tbody>
-        <tr><td>${badge('S')}</td><td>90 – 100% del puntaje máximo esperado</td><td style="text-align:center">${sat}</td><td style="text-align:center">${total?Math.round(sat/total*100):0}%</td></tr>
-        <tr><td>${badge('P')}</td><td>75 – 89% del puntaje máximo esperado</td><td style="text-align:center">${pm}</td><td style="text-align:center">${total?Math.round(pm/total*100):0}%</td></tr>
-        <tr><td>${badge('D')}</td><td>&lt;75% del puntaje máximo esperado</td><td style="text-align:center">${df}</td><td style="text-align:center">${total?Math.round(df/total*100):0}%</td></tr>
-      </tbody></table>
-    </div>
-    <div class="informe-section">
-      <h3>III. Detalle por historia clínica</h3>
-      <table><thead><tr><th>HC</th><th>Fecha</th><th>Servicio</th><th>Tipo</th><th style="text-align:center">Puntaje</th><th>Calificación</th><th>Colegiatura</th></tr></thead>
-      <tbody>${data.map((d,i)=>`<tr style="background:${i%2?'#f9fafb':'#fff'}"><td style="font-weight:500">${d.hc}</td><td>${d.fecha}</td><td>${d.servicio||'—'}</td><td style="font-size:11px">${TIPO_LABEL[d.tipo]||d.tipo}</td><td style="text-align:center;font-weight:600">${d.puntaje}/100</td><td>${badge(d.calif)}</td><td>${d.cole||'—'}</td></tr>`).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:1rem">Sin registros</td></tr>'}</tbody></table>
-    </div>
-    <div class="informe-section">
-      <h3>IV. Conclusiones y recomendaciones</h3>
-      <div style="border:1px solid var(--border);border-radius:8px;padding:1rem;min-height:80px;font-size:12px;color:var(--muted);font-style:italic">Completar en reunión del comité de auditoría.</div>
-    </div>
-    <div class="firmas-row">
-      <div class="firma-box"><div class="firma-line">Auditor Médico<br><span style="color:var(--muted)">Comité de Auditoría</span></div></div>
-      <div class="firma-box"><div class="firma-line">Jefe de Servicio / Dpto.<br><span style="color:var(--muted)">Visto Bueno</span></div></div>
+    <table style="margin-bottom:1rem"><thead><tr><th>HC</th><th>Fecha</th><th>Servicio</th><th>Tipo</th><th style="text-align:center">Puntaje</th><th>Calificación</th></tr></thead>
+    <tbody>${data.map((d,i)=>`<tr style="background:${i%2?'#f9fafb':'#fff'}"><td style="font-weight:500">${d.hc}</td><td>${d.fecha}</td><td>${d.servicio||'—'}</td><td style="font-size:11px">${TIPO_LABEL[d.tipo]||d.tipo}</td><td style="text-align:center;font-weight:600">${d.puntaje}/100</td><td>${badge(d.calif)}</td></tr>`).join('')}</tbody></table>
+    <div style="margin-top:2rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem">
+      <div style="text-align:center;font-size:11px"><div style="border-top:1px solid var(--text);padding-top:4px;margin-top:2rem">Auditor Médico</div></div>
+      <div style="text-align:center;font-size:11px"><div style="border-top:1px solid var(--text);padding-top:4px;margin-top:2rem">Jefe de Servicio / Dpto.</div></div>
     </div>
   `
 }
 
-function goTo(page, btn){
+// ── IMPRESIÓN ANEXO 5.4 ───────────────────────────────────────────────────────
+function buildAnexo54(rec){
+  const items=rec.tipo==='CI'?ITEMS_CI:ITEMS_CQ
+  const secs=[...new Set(items.map(x=>x.sec))]
+  const maxTotal=items.filter(it=>(rec.items||{})[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
+  const obtTotal=items.filter(it=>(rec.items||{})[it.id]==='C').reduce((a,b)=>a+b.peso,0)
+  const pct=maxTotal>0?Math.round(obtTotal/maxTotal*100):0
+  const calif=calcCalif(pct)
+  const califClass=calif==='S'?'calif-satisf':calif==='P'?'calif-mejor':'calif-defic'
+  const califTxt=califLabel(calif)+' ('+pct+'%)'
+
+  let rowsHtml=''
+  secs.forEach(sec=>{
+    const secItems=items.filter(it=>it.sec===sec)
+    const secMax=secItems.filter(it=>(rec.items||{})[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
+    const secObt=secItems.filter(it=>(rec.items||{})[it.id]==='C').reduce((a,b)=>a+b.peso,0)
+    rowsHtml+=`<tr class="sec-row"><td colspan="4" style="font-weight:bold;color:#003F87;background:#BDD7EE;padding:3px 5px;font-size:8pt">${sec.toUpperCase()}</td></tr>`
+    secItems.forEach(it=>{
+      const v=(rec.items||{})[it.id]||'C'
+      rowsHtml+=`<tr>
+        <td class="dato-label">${it.label}</td>
+        <td class="col-conf check-x">${v==='C'?'X':''}</td>
+        <td class="col-nc check-x">${v==='NC'?'X':''}</td>
+        <td class="col-na check-x">${v==='NA'?'NA':''}</td>
+      </tr>`
+    })
+    rowsHtml+=`<tr class="subtotal-row">
+      <td>SUBTOTAL — ${sec.toUpperCase()}</td>
+      <td class="col-conf">${Math.round(secMax)}</td>
+      <td class="col-nc">${Math.round(secObt)}</td>
+      <td class="col-na">${secMax>0?Math.round(secObt/secMax*100)+'%':'—'}</td>
+    </tr>`
+  })
+
+  return `
+  <div class="anexo">
+    <div class="anexo-header">
+      <div class="titulo-principal">ANEXO N° 5.4 — FORMATO DE AUDITORÍA DE REGISTRO – CENTRO QUIRÚRGICO</div>
+      <div class="subtitulo">EsSalud — Seguro Social de Salud del Perú</div>
+    </div>
+
+    <div class="anexo-section-title">I. DATOS GENERALES DE LA AUDITORÍA</div>
+    <table class="datos-gen-tabla">
+      <tr><td class="lbl">Miembros del comité de auditoría</td><td>${rec.comite||'—'}</td><td class="lbl">Número de auditoría</td><td>${rec.naud||'—'}</td></tr>
+      <tr><td class="lbl">Fecha de auditoría</td><td>${rec.created_at?rec.created_at.substring(0,10):''}</td><td class="lbl">Servicio auditado</td><td>${rec.servicio||'—'}</td></tr>
+      <tr><td class="lbl">Fecha de atención brindada</td><td>${rec.fecha||'—'}</td><td class="lbl">Tipo de auditoría</td><td>${TIPO_LABEL[rec.tipo]||rec.tipo}</td></tr>
+      <tr><td class="lbl">Número de la historia clínica</td><td>${rec.hc||'—'}</td><td class="lbl">Colegiatura del médico tratante</td><td>${rec.cole||'—'}</td></tr>
+      <tr><td class="lbl">Diagnóstico de alta / CIE-10</td><td colspan="3">${rec.dx||'—'}</td></tr>
+    </table>
+
+    <div class="anexo-section-title" style="margin-top:4px">II. OBSERVACIONES (Marque con X en la columna que corresponda)</div>
+    <table class="anexo-tabla">
+      <thead><tr><th style="width:55%">DATOS</th><th class="col-conf">CONFORME</th><th class="col-nc">NO CONFORME</th><th class="col-na">NO APLICA</th></tr></thead>
+      <tbody>
+        ${rowsHtml}
+        <tr class="total-row">
+          <td style="font-size:9pt">TOTAL</td>
+          <td class="col-conf">${Math.round(maxTotal)}</td>
+          <td class="col-nc">${Math.round(obtTotal)}</td>
+          <td class="col-na">${pct}%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="anexo-section-title" style="margin-top:4px">CALIFICACIÓN</div>
+    <div class="calif-box">
+      <table class="anexo-tabla" style="margin:0">
+        <tr><td style="width:35%;font-weight:bold">SATISFACTORIO</td><td>90 – 100% del puntaje máximo esperado</td></tr>
+        <tr><td style="font-weight:bold">POR MEJORAR</td><td>75 – 89% del puntaje máximo esperado</td></tr>
+        <tr><td style="font-weight:bold">DEFICIENTE</td><td>&lt;75% del puntaje máximo esperado</td></tr>
+      </table>
+      <div class="${califClass}" style="margin-top:2px">${califTxt}</div>
+    </div>
+
+    <div class="anexo-section-title" style="margin-top:4px">III. NO CONFORMIDADES IDENTIFICADAS</div>
+    <div class="nc-text-area">&nbsp;</div>
+
+    <div class="anexo-section-title" style="margin-top:4px">IV. CONCLUSIÓN</div>
+    <div class="concl-text-area">&nbsp;</div>
+
+    <div class="anexo-section-title" style="margin-top:4px">V. RECOMENDACIONES</div>
+    <div class="concl-text-area">&nbsp;</div>
+
+    <div class="firmas-box">
+      <div class="firma-item">Auditor Médico<br><span style="color:#666">Comité de Auditoría</span></div>
+      <div class="firma-item">Jefe de Servicio / Dpto.<br><span style="color:#666">Visto Bueno</span></div>
+    </div>
+  </div>`
+}
+
+function imprimirActual(){
+  if(!window._lastSaved){toast('Guarda la auditoría primero');return}
+  imprimirConRec(window._lastSaved)
+}
+
+function imprimirRegistro(id){
+  const rec=allData.find(d=>d.id===id)
+  if(!rec){toast('Registro no encontrado');return}
+  imprimirConRec(rec)
+}
+
+function imprimirConRec(rec){
+  document.getElementById('print-area').innerHTML=buildAnexo54(rec)
+  // Activar modo impresión
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
+  document.getElementById('print-area').style.display='block'
+  setTimeout(()=>{
+    window.print()
+    document.getElementById('print-area').style.display='none'
+    // Restaurar vista activa
+    document.getElementById('page-'+window._activePage).classList.add('active')
+  },200)
+}
+
+function goTo(page,btn){
+  window._activePage=page
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'))
   document.getElementById('page-'+page).classList.add('active')
@@ -658,6 +959,7 @@ function goTo(page, btn){
   if(page==='dashboard')loadDashboard()
   if(page==='informe')loadInforme()
 }
+window._activePage='dashboard'
 
 sb.auth.onAuthStateChange((event,session)=>{
   if(session){currentUser=session.user;initApp()}
