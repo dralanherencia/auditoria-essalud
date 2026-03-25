@@ -146,16 +146,11 @@ tbody tr:last-child td{border-bottom:none}
 ═══════════════════════════════════════════════════ */
 @media print {
   @page { margin: 10mm; size: A4; }
-  @page :first { margin-top: 10mm; }
-  html, body { height: auto !important; }
-  #print-area { page-break-before: avoid !important; margin-top: 0 !important; }
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  #auth-screen, .topbar, .nav, .score-live, .btn-row, .btn, .filter-row, #toast, #loading { display: none !important; }
-  body { background: #fff; font-family: Arial, sans-serif; font-size: 10pt; }
-  #app-screen { display: block !important; }
-  .page { display: none !important; padding: 0; margin: 0; }
-  #page-registro.active { display: none !important; }
-  #print-area { display: block !important; }
+  html { height: auto !important; }
+  body { background: #fff !important; font-family: Arial, sans-serif; font-size: 10pt; margin: 0; padding: 0; height: auto !important; }
+  #auth-screen, .topbar, .nav, .score-live, .btn-row, .btn, .filter-row, #toast, #loading, #app-screen { display: none !important; }
+  #print-area { display: block !important; margin: 0 !important; padding: 0 !important; }
   .card { border: none; padding: 0; margin: 0; }
   .form-grid, .items-list, .sec-header { display: none !important; }
 }
@@ -944,15 +939,13 @@ function imprimirRegistro(id){
 
 function imprimirConRec(rec){
   document.getElementById('print-area').innerHTML=buildAnexo54(rec)
-  // Activar modo impresión
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
   document.getElementById('print-area').style.display='block'
+  document.getElementById('app-screen').style.display='none'
   setTimeout(()=>{
     window.print()
     document.getElementById('print-area').style.display='none'
-    // Restaurar vista activa
-    document.getElementById('page-'+window._activePage).classList.add('active')
-  },200)
+    document.getElementById('app-screen').style.display='block'
+  },300)
 }
 
 function goTo(page,btn){
