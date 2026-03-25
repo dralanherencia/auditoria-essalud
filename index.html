@@ -432,11 +432,17 @@ tbody tr:last-child td{border-bottom:none}
 <div id="toast"></div>
 <div id="loading" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,.8);align-items:center;justify-content:center;z-index:9998"><div class="spinner"></div></div>
 
-<script>
+<script defer>
 const SUPABASE_URL = 'https://gitnuuningkcbcpkmagy.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_WnXtoQgf05g2TRBcoCVB2w_lVfrswGZ'
 const { createClient } = window.supabase
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: false
+  }
+})
 
 // ── DEFINICIÓN DE ÍTEMS ──────────────────────────────────────────────────────
 const ITEMS_CI = [
@@ -1000,8 +1006,31 @@ function goTo(page,btn){
 window._activePage='dashboard'
 
 sb.auth.onAuthStateChange((event,session)=>{
-  if(session){currentUser=session.user;initApp()}
+  if(event==='SIGNED_IN' && session){
+    currentUser=session.user
+    initApp()
+  }
+  if(event==='SIGNED_OUT'){
+    document.getElementById('auth-screen').style.display='flex'
+    document.getElementById('app-screen').style.display='none'
+  }
 })
+
+// Expose all functions globally so onclick attributes work
+window.login=login
+window.logout=logout
+window.goTo=goTo
+window.renderItems=renderItems
+window.setItem=setItem
+window.guardar=guardar
+window.limpiar=limpiar
+window.loadDashboard=loadDashboard
+window.loadMatriz=loadMatriz
+window.loadInforme=loadInforme
+window.eliminar=eliminar
+window.exportCSV=exportCSV
+window.imprimirActual=imprimirActual
+window.imprimirRegistro=imprimirRegistro
 </script>
 </body>
 </html>
