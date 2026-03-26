@@ -122,6 +122,7 @@ tbody tr:hover td{background:#f9fafb}
       <div><div class="topbar h1" style="font-size:13px;font-weight:500">Auditoría de Registros — EsSalud</div><div class="sub">Centro Quirúrgico</div></div>
     </div>
     <div class="topbar-right">
+      <span id="role-badge" style="padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(255,255,255,.15);color:#fff">—</span>
       <span class="user-badge" id="user-badge">—</span>
       <button class="btn-logout" id="btn-logout">Salir</button>
     </div>
@@ -131,6 +132,7 @@ tbody tr:hover td{background:#f9fafb}
     <button class="nav-btn" data-page="registro">Registrar</button>
     <button class="nav-btn" data-page="matriz">Matriz</button>
     <button class="nav-btn" data-page="informe">Informe</button>
+    <button class="nav-btn" data-page="log" id="nav-log" style="display:none">Log</button>
   </nav>
 
   <!-- DASHBOARD -->
@@ -226,6 +228,24 @@ tbody tr:hover td{background:#f9fafb}
     </div>
   </div>
 
+  <!-- LOG PAGE -->
+  <div class="page" id="page-log">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:6px">
+      <div style="font-size:15px;font-weight:600">Log de cambios</div>
+      <div style="font-size:11px;color:#6b7280;background:#fef9c3;border:1px solid #fde68a;border-radius:6px;padding:4px 10px">Solo lectura — no se puede modificar</div>
+    </div>
+    <div class="filter-row">
+      <input id="log-hc" type="text" placeholder="Buscar por HC..." style="width:140px">
+      <button class="btn btn-s btn-sm" id="btn-log-filter">Filtrar</button>
+    </div>
+    <div class="card" style="padding:.5rem;overflow-x:auto">
+      <table>
+        <thead><tr><th>Fecha/Hora</th><th>Usuario</th><th>HC</th><th>Acción</th><th>Campo</th><th>Valor anterior</th><th>Valor nuevo</th></tr></thead>
+        <tbody id="tbody-log"></tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- MODAL EDITAR -->
   <div id="modal-edit" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:1rem">
     <div style="background:#fff;border-radius:12px;padding:1.5rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto">
@@ -233,7 +253,11 @@ tbody tr:hover td{background:#f9fafb}
         <div style="font-size:15px;font-weight:600">Editar auditoría</div>
         <button id="btn-close-edit" style="background:none;border:none;font-size:20px;cursor:pointer;color:#6b7280">✕</button>
       </div>
-      <div style="font-size:11px;color:#6b7280;background:#fef9c3;border:1px solid #fde68a;border-radius:6px;padding:6px 10px;margin-bottom:.75rem">Solo se pueden editar los datos generales. Los ítems no se modifican por trazabilidad.</div>
+      <div style="font-size:11px;color:#6b7280;background:#fef9c3;border:1px solid #fde68a;border-radius:6px;padding:6px 10px;margin-bottom:.75rem">Los cambios quedan registrados en el log de auditoría con usuario, fecha y valores anteriores.</div>
+      <div id="edit-tabs" style="display:flex;gap:4px;margin-bottom:.75rem">
+        <button class="btn btn-p btn-sm" id="etab-datos" onclick="switchEditTab('datos')">Datos generales</button>
+        <button class="btn btn-s btn-sm" id="etab-items" onclick="switchEditTab('items')">Ítems</button>
+      </div>
       <div class="form-grid">
         <div class="fg"><label>N° Historia Clínica</label><input id="e-hc" type="text"></div>
         <div class="fg"><label>Fecha de atención</label><input id="e-fecha" type="date"></div>
@@ -251,6 +275,7 @@ tbody tr:hover td{background:#f9fafb}
         <div class="fg"><label>N° Auditoría</label><input id="e-naud" type="text"></div>
         <div class="fg"><label>Miembros del comité</label><input id="e-comite" type="text"></div>
       </div>
+      <div id="edit-items-container" style="display:none;max-height:40vh;overflow-y:auto"></div>
       <div class="btn-row">
         <button class="btn btn-s" id="btn-cancel-edit">Cancelar</button>
         <button class="btn btn-p" id="btn-save-edit">Guardar cambios</button>
@@ -281,6 +306,13 @@ tbody tr:hover td{background:#f9fafb}
 <script>
 const SUPABASE_URL = 'https://gitnuuningkcbcpkmagy.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_WnXtoQgf05g2TRBcoCVB2w_lVfrswGZ'
+
+// Usuarios administradores — pueden editar y eliminar
+const ADMINS = [
+  'jeanpihero2@gmail.com',
+  'maria.vergara@upch.pe'
+]
+function isAdmin(){ return currentUser && ADMINS.includes(currentUser.email) }
 
 const ITEMS_CI = [
   {id:'hc',label:'Número de historia clínica',peso:4,sec:'Observaciones'},
@@ -450,8 +482,11 @@ async function initApp(){
   document.getElementById('auth-screen').style.display='none'
   document.getElementById('app-screen').style.display='block'
   document.getElementById('user-badge').textContent = currentUser.email
+  document.getElementById('role-badge').textContent = isAdmin() ? 'Admin' : 'Auditor'
+  document.getElementById('role-badge').style.background = isAdmin() ? 'rgba(112,173,71,.3)' : 'rgba(255,255,255,.15)'
   document.getElementById('f-fecha').value = new Date().toISOString().split('T')[0]
   document.getElementById('f-fecha-reg').value = new Date().toISOString().split('T')[0]
+  document.getElementById('nav-log').style.display = isAdmin() ? 'block' : 'none'
   loading(true)
   const {data,error} = await sb.from('auditorias').select('*').order('fecha',{ascending:false})
   loading(false)
@@ -633,8 +668,7 @@ function loadMatriz(){
       <td style="font-size:11px">${d.fecha_registro||d.fecha}</td>
       <td style="white-space:nowrap">
         <button class="btn btn-print btn-sm" data-id="${d.id}">PDF</button>
-        <button class="btn btn-s btn-sm" data-edit="${d.id}">Editar</button>
-        <button class="btn btn-danger btn-sm" data-del="${d.id}">✕</button>
+        ${isAdmin()?`<button class="btn btn-s btn-sm" data-edit="${d.id}">Editar</button><button class="btn btn-danger btn-sm" data-del="${d.id}">✕</button>`:''}
       </td>
     </tr>`).join('')||'<tr><td colspan="7" style="text-align:center;color:#6b7280;padding:1rem">Sin registros</td></tr>'
   document.querySelectorAll('[data-id]').forEach(btn=>btn.addEventListener('click',()=>imprimirRegistro(btn.dataset.id)))
@@ -777,11 +811,24 @@ function imprimirRegistro(id){
 }
 
 let editingId = null
+let editingRec = null
+let editItemState = {}
+
+function switchEditTab(tab){
+  document.getElementById('edit-tabs').querySelectorAll('.btn').forEach(b=>b.className='btn btn-s btn-sm')
+  document.getElementById('modal-edit').querySelector('.form-grid').style.display = tab==='datos'?'grid':'none'
+  document.getElementById('edit-items-container').style.display = tab==='items'?'block':'none'
+  document.getElementById('etab-'+tab).className='btn btn-p btn-sm'
+}
 
 function abrirEditar(id){
   const rec = allData.find(d=>d.id===id)
   if(!rec)return
   editingId = id
+  editingRec = rec
+  editItemState = rec.items ? {...rec.items} : {}
+
+  // Fill datos generales
   document.getElementById('e-hc').value = rec.hc||''
   document.getElementById('e-fecha').value = rec.fecha||''
   document.getElementById('e-fecha-reg').value = rec.fecha_registro||rec.fecha||''
@@ -790,16 +837,60 @@ function abrirEditar(id){
   document.getElementById('e-dx').value = rec.dx||''
   document.getElementById('e-naud').value = rec.naud||''
   document.getElementById('e-comite').value = rec.comite||''
+
+  // Build items editor
+  const items = rec.tipo==='CI'?ITEMS_CI:ITEMS_CQ
+  const secs = [...new Set(items.map(x=>x.sec))]
+  const cont = document.getElementById('edit-items-container')
+  cont.innerHTML = secs.map(sec=>`
+    <div class="sec-header">${sec}</div>
+    <div class="items-list">${items.filter(it=>it.sec===sec).map(it=>{
+      const v = editItemState[it.id]||'C'
+      return `<div class="item-row ${v==='C'?'conforme':v==='NC'?'noconforme':''}" id="erow-${it.id}">
+        <span class="item-label" style="font-size:11px">${it.label}</span>
+        <span class="item-pts">${it.peso}pts</span>
+        <div class="item-controls">
+          <button class="btn-c c ${v==='C'?'active':''}" data-eid="${it.id}" data-val="C">C</button>
+          <button class="btn-c nc ${v==='NC'?'active':''}" data-eid="${it.id}" data-val="NC">NC</button>
+          <button class="btn-c na ${v==='NA'?'active':''}" data-eid="${it.id}" data-val="NA">NA</button>
+        </div>
+      </div>`
+    }).join('')}</div>`).join('')
+  cont.querySelectorAll('[data-eid]').forEach(btn=>{
+    btn.addEventListener('click',()=>setEditItem(btn.dataset.eid, btn.dataset.val))
+  })
+
+  switchEditTab('datos')
   document.getElementById('modal-edit').style.display='flex'
+}
+
+function setEditItem(id, val){
+  editItemState[id] = val
+  const row = document.getElementById('erow-'+id)
+  if(!row)return
+  row.className = 'item-row'+(val==='C'?' conforme':val==='NC'?' noconforme':'')
+  row.querySelectorAll('[data-eid]').forEach(b=>{
+    b.classList.remove('active')
+    if(b.dataset.val===val)b.classList.add('active')
+  })
 }
 
 function cerrarEditar(){
   document.getElementById('modal-edit').style.display='none'
   editingId = null
+  editingRec = null
+  editItemState = {}
 }
 
 async function guardarEdicion(){
-  if(!editingId)return
+  if(!editingId||!editingRec)return
+
+  // Recalculate score with new items
+  const items = editingRec.tipo==='CI'?ITEMS_CI:ITEMS_CQ
+  const maxPts = items.filter(it=>editItemState[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
+  const obtPts = items.filter(it=>editItemState[it.id]==='C').reduce((a,b)=>a+b.peso,0)
+  const puntaje = maxPts>0?Math.round(obtPts/maxPts*100):0
+
   const updates = {
     hc: document.getElementById('e-hc').value.trim(),
     fecha: document.getElementById('e-fecha').value,
@@ -809,19 +900,74 @@ async function guardarEdicion(){
     dx: document.getElementById('e-dx').value.trim(),
     naud: document.getElementById('e-naud').value.trim(),
     comite: document.getElementById('e-comite').value.trim(),
-    mes: document.getElementById('e-fecha').value.substring(0,7)
+    mes: document.getElementById('e-fecha').value.substring(0,7),
+    items: {...editItemState},
+    puntaje,
+    calif: calcCalif(puntaje)
   }
+
+  // Build log entry — track what changed
+  const changed = []
+  const camposLabel = {hc:'HC',fecha:'Fecha atención',fecha_registro:'Fecha registro',servicio:'Servicio',cole:'Colegiatura',dx:'Diagnóstico',naud:'N° Auditoría',comite:'Comité'}
+  Object.entries(camposLabel).forEach(([k,label])=>{
+    if(String(editingRec[k]||'') !== String(updates[k]||''))
+      changed.push({campo:label, anterior:editingRec[k]||'', nuevo:updates[k]||''})
+  })
+  // Check if items changed
+  const itemsChanged = JSON.stringify(editingRec.items||{}) !== JSON.stringify(updates.items)
+  if(itemsChanged) changed.push({campo:'Ítems', anterior:'(ver registro)', nuevo:'(actualizado)'})
+  if(editingRec.puntaje !== puntaje) changed.push({campo:'Puntaje', anterior:editingRec.puntaje, nuevo:puntaje})
+
   loading(true)
   const {data,error} = await sb.from('auditorias').update(updates).eq('id',editingId).select()
+  if(error){loading(false);toast('Error: '+error.message);return}
+
+  // Insert log entries
+  if(changed.length > 0){
+    const logEntries = changed.map(c=>({
+      auditoria_id: editingId,
+      usuario: currentUser.email,
+      accion: 'EDICIÓN',
+      campo: c.campo,
+      valor_anterior: JSON.stringify(c.anterior),
+      valor_nuevo: JSON.stringify(c.nuevo)
+    }))
+    await sb.from('audit_log').insert(logEntries)
+  }
   loading(false)
-  if(error){toast('Error: '+error.message);return}
+
   const idx = allData.findIndex(d=>d.id===editingId)
   if(idx>=0) allData[idx] = {...allData[idx],...updates}
   cerrarEditar()
   loadMatriz()
   loadDashboard()
-  toast('Auditoría actualizada')
+  toast('Auditoría actualizada · '+changed.length+' campo(s) modificado(s)')
 }
+
+async function loadLog(){
+  const hcQ = document.getElementById('log-hc').value.trim()
+  loading(true)
+  let query = sb.from('audit_log')
+    .select('*, auditorias(hc)')
+    .order('created_at',{ascending:false})
+    .limit(200)
+  const {data,error} = await query
+  loading(false)
+  if(error){toast('Error: '+error.message);return}
+  let rows = data||[]
+  if(hcQ) rows = rows.filter(r=>r.auditorias&&String(r.auditorias.hc).toLowerCase().includes(hcQ.toLowerCase()))
+  document.getElementById('tbody-log').innerHTML = rows.length ? rows.map(r=>`
+    <tr>
+      <td style="font-size:11px;white-space:nowrap">${r.created_at?r.created_at.substring(0,19).replace('T',' '):''}</td>
+      <td style="font-size:11px">${r.usuario||'—'}</td>
+      <td style="font-weight:500">${r.auditorias?.hc||'—'}</td>
+      <td><span class="badge ${r.accion==='EDICIÓN'?'b-yellow':'b-red'}">${r.accion}</span></td>
+      <td style="font-size:11px">${r.campo||'—'}</td>
+      <td style="font-size:11px;color:#8b1a1a">${r.valor_anterior||'—'}</td>
+      <td style="font-size:11px;color:#2e6e0e">${r.valor_nuevo||'—'}</td>
+    </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:#6b7280;padding:1rem">Sin registros en el log</td></tr>'
+}
+
 
 function goTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
@@ -831,6 +977,7 @@ function goTo(page){
   if(page==='matriz')loadMatriz()
   if(page==='dashboard')loadDashboard()
   if(page==='informe')loadInforme()
+  if(page==='log')loadLog()
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -843,7 +990,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('btn-csv').addEventListener('click', exportCSV)
   document.getElementById('btn-filtrar').addEventListener('click', loadMatriz)
   document.getElementById('btn-print-inf').addEventListener('click', ()=>window.print())
+  document.getElementById('btn-log-filter').addEventListener('click', loadLog)
   document.getElementById('btn-close-edit').addEventListener('click', cerrarEditar)
+  // switchEditTab called inline from HTML buttons
   document.getElementById('btn-cancel-edit').addEventListener('click', cerrarEditar)
   document.getElementById('btn-save-edit').addEventListener('click', guardarEdicion)
   document.getElementById('mes-filter').addEventListener('change', loadDashboard)
