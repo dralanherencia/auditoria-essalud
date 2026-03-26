@@ -37,7 +37,7 @@ body{font-family:'Tahoma',sans-serif;background:var(--bg);color:var(--text);font
 .page.active{display:block}
 .card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem;margin-bottom:.75rem}
 .card-title{font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.6px;margin-bottom:.75rem}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:.75rem}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:.75rem}
 .metric{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:.75rem;border-top:3px solid #003F87}
 .metric .lbl{font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
 .metric .val{font-size:22px;font-weight:600}
@@ -165,7 +165,8 @@ tbody tr:hover td{background:#f9fafb}
       <div class="card-title">Datos generales</div>
       <div class="form-grid">
         <div class="fg"><label>N° Historia Clínica *</label><input id="f-hc" type="text" placeholder="79728"></div>
-        <div class="fg"><label>Fecha de atención *</label><input id="f-fecha" type="date"></div>
+        <div class="fg"><label>Fecha de atención (de la HC) *</label><input id="f-fecha" type="date"></div>
+        <div class="fg"><label>Fecha de registro (hoy) *</label><input id="f-fecha-reg" type="date"></div>
         <div class="fg"><label>Servicio auditado *</label>
           <select id="f-servicio">
             <option value="">Seleccionar...</option>
@@ -220,8 +221,40 @@ tbody tr:hover td{background:#f9fafb}
       <button class="btn btn-s btn-sm" id="btn-filtrar">Filtrar</button>
     </div>
     <div class="card" style="padding:.5rem;overflow-x:auto">
-      <table><thead><tr><th>HC</th><th>Fecha</th><th>Servicio</th><th>Tipo</th><th>Puntaje</th><th>Calif.</th><th>Acciones</th></tr></thead>
+      <table><thead><tr><th>HC</th><th>F. Atención</th><th>F. Registro</th><th>Servicio</th><th>Tipo</th><th>Puntaje</th><th>Calif.</th><th>Acciones</th></tr></thead>
       <tbody id="tbody-matriz"></tbody></table>
+    </div>
+  </div>
+
+  <!-- MODAL EDITAR -->
+  <div id="modal-edit" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div style="background:#fff;border-radius:12px;padding:1.5rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+        <div style="font-size:15px;font-weight:600">Editar auditoría</div>
+        <button id="btn-close-edit" style="background:none;border:none;font-size:20px;cursor:pointer;color:#6b7280">✕</button>
+      </div>
+      <div style="font-size:11px;color:#6b7280;background:#fef9c3;border:1px solid #fde68a;border-radius:6px;padding:6px 10px;margin-bottom:.75rem">Solo se pueden editar los datos generales. Los ítems no se modifican por trazabilidad.</div>
+      <div class="form-grid">
+        <div class="fg"><label>N° Historia Clínica</label><input id="e-hc" type="text"></div>
+        <div class="fg"><label>Fecha de atención</label><input id="e-fecha" type="date"></div>
+        <div class="fg"><label>Fecha de registro</label><input id="e-fecha-reg" type="date"></div>
+        <div class="fg"><label>Servicio auditado</label>
+          <select id="e-servicio">
+            <option>ANESTESIOLOGÍA</option><option>CIRUGÍA GENERAL</option>
+            <option>OFTALMOLOGÍA</option><option>TRAUMATOLOGÍA</option>
+            <option>GINECOLOGÍA</option><option>UROLOGÍA</option>
+            <option>MEDICINA INTERNA</option><option>PEDIATRÍA</option>
+          </select>
+        </div>
+        <div class="fg"><label>Colegiatura del médico</label><input id="e-cole" type="text"></div>
+        <div class="fg"><label>Diagnóstico (CIE-10)</label><input id="e-dx" type="text"></div>
+        <div class="fg"><label>N° Auditoría</label><input id="e-naud" type="text"></div>
+        <div class="fg"><label>Miembros del comité</label><input id="e-comite" type="text"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-s" id="btn-cancel-edit">Cancelar</button>
+        <button class="btn btn-p" id="btn-save-edit">Guardar cambios</button>
+      </div>
     </div>
   </div>
 
@@ -418,6 +451,7 @@ async function initApp(){
   document.getElementById('app-screen').style.display='block'
   document.getElementById('user-badge').textContent = currentUser.email
   document.getElementById('f-fecha').value = new Date().toISOString().split('T')[0]
+  document.getElementById('f-fecha-reg').value = new Date().toISOString().split('T')[0]
   loading(true)
   const {data,error} = await sb.from('auditorias').select('*').order('fecha',{ascending:false})
   loading(false)
@@ -451,8 +485,9 @@ function loadDashboard(){
   document.getElementById('metrics').innerHTML=`
     <div class="metric"><div class="lbl">Auditorías</div><div class="val">${total}</div><div class="sub">en el período</div></div>
     <div class="metric"><div class="lbl">Promedio</div><div class="val">${prom}<small style="font-size:13px">/100</small></div><div class="sub" style="color:${diff===null?'#6b7280':diff>=0?'#2e6e0e':'#8b1a1a'}">${diff===null?'—':diff>=0?'▲ +'+diff:'▼ '+diff}</div></div>
-    <div class="metric" style="border-top-color:#70AD47"><div class="lbl">Satisfact.</div><div class="val" style="color:#2e6e0e">${total?Math.round(sat/total*100):0}%</div><div class="sub">${sat} casos</div></div>
-    <div class="metric" style="border-top-color:#FF4C4C"><div class="lbl">Deficientes</div><div class="val" style="color:#8b1a1a">${def}</div><div class="sub">${total?Math.round(def/total*100):0}%</div></div>`
+    <div class="metric" style="border-top-color:#70AD47"><div class="lbl">Satisfactorios</div><div class="val" style="color:#2e6e0e">${total?Math.round(sat/total*100):0}%</div><div class="sub">${sat} de ${total}</div></div>
+    <div class="metric" style="border-top-color:#FFD966"><div class="lbl">Por mejorar</div><div class="val" style="color:#7d5a00">${total?Math.round(pm/total*100):0}%</div><div class="sub">${pm} de ${total}</div></div>
+    <div class="metric" style="border-top-color:#FF4C4C"><div class="lbl">Deficientes</div><div class="val" style="color:#8b1a1a">${total?Math.round(def/total*100):0}%</div><div class="sub">${def} de ${total}</div></div>`
   const mesesLast=allMeses.slice(-6)
   const promMes=mesesLast.map(m=>{const d=allData.filter(x=>x.mes===m);return d.length?Math.round(d.reduce((a,b)=>a+b.puntaje,0)/d.length):null})
   if(charts.tend)charts.tend.destroy()
@@ -479,7 +514,7 @@ function renderItems(){
   if(!tipo){cont.innerHTML='';itemState={};return}
   const items = tipo==='CI'?ITEMS_CI:ITEMS_CQ
   itemState={}
-  items.forEach(it=>itemState[it.id]=it.na?'NA':'C')
+  items.forEach(it=>itemState[it.id]='C')
   const secs=[...new Set(items.map(x=>x.sec))]
   cont.innerHTML=secs.map(sec=>`
     <div class="sec-header">${sec}</div>
@@ -490,7 +525,7 @@ function renderItems(){
         <div class="item-controls">
           <button class="btn-c c active" data-id="${it.id}" data-val="C">C</button>
           <button class="btn-c nc" data-id="${it.id}" data-val="NC">NC</button>
-          ${it.na?`<button class="btn-c na active" data-id="${it.id}" data-val="NA">NA</button>`:''}
+          <button class="btn-c na" data-id="${it.id}" data-val="NA">NA</button>
         </div>
       </div>`).join('')}
     </div>`).join('')
@@ -539,11 +574,13 @@ async function guardar(){
   const maxPts=items.filter(it=>itemState[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
   const obtPts=items.filter(it=>itemState[it.id]==='C').reduce((a,b)=>a+b.peso,0)
   const puntaje=maxPts>0?Math.round(obtPts/maxPts*100):0
+  const fechaReg = document.getElementById('f-fecha-reg').value || new Date().toISOString().split('T')[0]
   const row={hc,fecha,servicio,tipo,puntaje,calif:calcCalif(puntaje),
     cole:document.getElementById('f-cole').value.trim(),
     dx:document.getElementById('f-dx').value.trim(),
     naud:document.getElementById('f-naud').value.trim(),
     comite:document.getElementById('f-comite').value.trim(),
+    fecha_registro:fechaReg,
     mes:fecha.substring(0,7),items:{...itemState},
     auditor:currentUser.email,user_id:currentUser.id}
   loading(true)
@@ -556,10 +593,16 @@ async function guardar(){
   toast('Guardado · HC '+hc+' · '+puntaje+'/100')
   document.getElementById('btn-imprimir').style.display='inline-block'
   loadDashboard()
+  // Auto-clear form after 1.5s so user can start next audit
+  setTimeout(()=>{
+    limpiar()
+    document.getElementById('btn-imprimir').style.display='none'
+  }, 1500)
 }
 
 function limpiar(){
   ['f-hc','f-cole','f-dx','f-naud','f-comite'].forEach(id=>document.getElementById(id).value='')
+  document.getElementById('f-fecha-reg').value=new Date().toISOString().split('T')[0]
   document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0]
   document.getElementById('f-servicio').selectedIndex=0
   document.getElementById('f-tipo').selectedIndex=0
@@ -587,13 +630,16 @@ function loadMatriz(){
       <td style="font-size:10px">${TIPO_LABEL[d.tipo]||d.tipo}</td>
       <td><span class="dot ${dotClass(d.puntaje)}" style="margin-right:4px"></span>${d.puntaje}/100</td>
       <td>${badge(d.calif)}</td>
+      <td style="font-size:11px">${d.fecha_registro||d.fecha}</td>
       <td style="white-space:nowrap">
         <button class="btn btn-print btn-sm" data-id="${d.id}">PDF</button>
+        <button class="btn btn-s btn-sm" data-edit="${d.id}">Editar</button>
         <button class="btn btn-danger btn-sm" data-del="${d.id}">✕</button>
       </td>
     </tr>`).join('')||'<tr><td colspan="7" style="text-align:center;color:#6b7280;padding:1rem">Sin registros</td></tr>'
   document.querySelectorAll('[data-id]').forEach(btn=>btn.addEventListener('click',()=>imprimirRegistro(btn.dataset.id)))
   document.querySelectorAll('[data-del]').forEach(btn=>btn.addEventListener('click',()=>eliminar(btn.dataset.del)))
+  document.querySelectorAll('[data-edit]').forEach(btn=>btn.addEventListener('click',()=>abrirEditar(btn.dataset.edit)))
 }
 
 async function eliminar(id){
@@ -628,7 +674,7 @@ function loadInforme(){
       <div style="font-size:17px;font-weight:600;margin:.3rem 0">Informe de Auditoría de Registros Médicos</div>
       <div style="font-size:12px;color:#6b7280">Período: ${mesLabel(mes)}</div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1rem">
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:1rem">
       <div style="text-align:center;padding:.65rem;border:1px solid #e5e7eb;border-radius:8px"><div style="font-size:18px;font-weight:600;color:#003F87">${total}</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase">Auditorías</div></div>
       <div style="text-align:center;padding:.65rem;border:1px solid #e5e7eb;border-radius:8px"><div style="font-size:18px;font-weight:600;color:${prom>=90?'#2e6e0e':prom>=75?'#7d5a00':'#8b1a1a'}">${prom}/100</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase">Promedio</div></div>
       <div style="text-align:center;padding:.65rem;border:1px solid #e5e7eb;border-radius:8px"><div style="font-size:18px;font-weight:600;color:#2e6e0e">${sat}</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase">Satisfactorios</div></div>
@@ -730,6 +776,53 @@ function imprimirRegistro(id){
   if(rec)imprimirConRec(rec)
 }
 
+let editingId = null
+
+function abrirEditar(id){
+  const rec = allData.find(d=>d.id===id)
+  if(!rec)return
+  editingId = id
+  document.getElementById('e-hc').value = rec.hc||''
+  document.getElementById('e-fecha').value = rec.fecha||''
+  document.getElementById('e-fecha-reg').value = rec.fecha_registro||rec.fecha||''
+  document.getElementById('e-servicio').value = rec.servicio||''
+  document.getElementById('e-cole').value = rec.cole||''
+  document.getElementById('e-dx').value = rec.dx||''
+  document.getElementById('e-naud').value = rec.naud||''
+  document.getElementById('e-comite').value = rec.comite||''
+  document.getElementById('modal-edit').style.display='flex'
+}
+
+function cerrarEditar(){
+  document.getElementById('modal-edit').style.display='none'
+  editingId = null
+}
+
+async function guardarEdicion(){
+  if(!editingId)return
+  const updates = {
+    hc: document.getElementById('e-hc').value.trim(),
+    fecha: document.getElementById('e-fecha').value,
+    fecha_registro: document.getElementById('e-fecha-reg').value,
+    servicio: document.getElementById('e-servicio').value,
+    cole: document.getElementById('e-cole').value.trim(),
+    dx: document.getElementById('e-dx').value.trim(),
+    naud: document.getElementById('e-naud').value.trim(),
+    comite: document.getElementById('e-comite').value.trim(),
+    mes: document.getElementById('e-fecha').value.substring(0,7)
+  }
+  loading(true)
+  const {data,error} = await sb.from('auditorias').update(updates).eq('id',editingId).select()
+  loading(false)
+  if(error){toast('Error: '+error.message);return}
+  const idx = allData.findIndex(d=>d.id===editingId)
+  if(idx>=0) allData[idx] = {...allData[idx],...updates}
+  cerrarEditar()
+  loadMatriz()
+  loadDashboard()
+  toast('Auditoría actualizada')
+}
+
 function goTo(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'))
@@ -750,6 +843,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('btn-csv').addEventListener('click', exportCSV)
   document.getElementById('btn-filtrar').addEventListener('click', loadMatriz)
   document.getElementById('btn-print-inf').addEventListener('click', ()=>window.print())
+  document.getElementById('btn-close-edit').addEventListener('click', cerrarEditar)
+  document.getElementById('btn-cancel-edit').addEventListener('click', cerrarEditar)
+  document.getElementById('btn-save-edit').addEventListener('click', guardarEdicion)
   document.getElementById('mes-filter').addEventListener('change', loadDashboard)
   document.getElementById('fi-mes').addEventListener('change', loadInforme)
   document.getElementById('f-tipo').addEventListener('change', renderItems)
