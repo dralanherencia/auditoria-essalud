@@ -707,7 +707,15 @@ const ITEMS_SV = [
   {id:'sv_c08',label:'Registra trazado lineal (color rojo en 37°C)',peso:7,sec:'Contenido del Registro'},
   {id:'sv_c09',label:'Registra operación y días post operatorios si el caso requiere',peso:4,sec:'Contenido del Registro'},
   {id:'sv_c10',label:'Registra total de egresos en 24 horas (orina, heces, drenajes, etc.)',peso:4,sec:'Contenido del Registro'},
-
+  {id:'sv_c11',label:'Registra días de menstruación (ginecología)',peso:3,sec:'Contenido del Registro'},
+  {id:'sv_c12',label:'Peso',peso:4,sec:'Contenido del Registro'},
+  {id:'sv_c13',label:'Talla',peso:4,sec:'Contenido del Registro'},
+  {id:'sv_c14',label:'Registro de alergias medicamentosas',peso:4,sec:'Contenido del Registro'},
+  {id:'sv_c15',label:'Registra componentes sanguíneos',peso:4,sec:'Contenido del Registro'},
+  {id:'sv_q01',label:'Letra y números legibles',peso:2,sec:'Calidad del Registro'},
+  {id:'sv_q02',label:'No borrones ni enmendaduras',peso:2,sec:'Calidad del Registro'},
+  {id:'sv_q03',label:'Uso de lapicero de color oficial (azul y rojo)',peso:2,sec:'Calidad del Registro'},
+]
 const ALL_ITEMS = [...ITEMS_CI,...ITEMS_CQ,...ITEMS_CE,...ITEMS_EM,...ITEMS_HO,...ITEMS_BH,...ITEMS_SV]
 const TIPO_LABEL = {CE:'Consulta Externa',EM:'Emergencia',HO:'Hospitalización',CQ:'Centro Quirúrgico',CI:'Consentimiento Informado',BH:'Balance Hídrico Enfermería',SV:'Signos Vitales Enfermería'}
 const ANEXO_NUM = {CE:'5.1',EM:'5.2',HO:'5.3',CQ:'5.4',CI:'5.5',BH:'5.6',SV:'5.7'}
@@ -716,20 +724,13 @@ const MESES = {'01':'Enero','02':'Febrero','03':'Marzo','04':'Abril','05':'Mayo'
 let sb, currentUser=null, allData=[], charts={}, itemState={}
 
 function getItemsByTipo(tipo){
-  const map = {CI:ITEMS_CI,CQ:ITEMS_CQ,CE:ITEMS_CE,EM:ITEMS_EM,HO:ITEMS_HO,BH:ITEMS_BH,SV:ITEMS_SV}
+  const map={CI:ITEMS_CI,CQ:ITEMS_CQ,CE:ITEMS_CE,EM:ITEMS_EM,HO:ITEMS_HO,BH:ITEMS_BH,SV:ITEMS_SV}
   return map[tipo]||[]
 }
-
-// Calification thresholds vary by format type
-// CE,EM,HO,CQ,CI: >=90 Satisfactorio, 75-89 Por mejorar, <75 Deficiente
-// BH,SV: >=90 Satisfactorio, 60-89 Por mejorar, <60 Deficiente
-function calcCalifByTipo(pct, tipo){
-  if(tipo==='BH'||tipo==='SV'){
-    return pct>=90?'S':pct>=60?'P':'D'
-  }
+function calcCalifByTipo(pct,tipo){
+  if(tipo==='BH'||tipo==='SV') return pct>=90?'S':pct>=60?'P':'D'
   return pct>=90?'S':pct>=75?'P':'D'
 }
-
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',dur)}
 function loading(v){document.getElementById('loading').style.display=v?'flex':'none'}
 function calcCalif(p){return p>=90?'S':p>=75?'P':'D'}
@@ -839,7 +840,7 @@ function renderItems(){
   document.getElementById('score-live').style.display = tipo?'flex':'none'
   document.getElementById('btn-imprimir').style.display = 'none'
   if(!tipo){cont.innerHTML='';itemState={};return}
-  const items = getItemsByTipo(tipo)
+  const items=getItemsByTipo(tipo)
   itemState={}
   items.forEach(it=>itemState[it.id]='C')
   const secs=[...new Set(items.map(x=>x.sec))]
@@ -1055,7 +1056,7 @@ function buildAnexo54(rec){
     </table>
     <div style="background:#003F87;color:#fff;font-weight:bold;padding:3px 6px;font-size:9pt;margin-top:4px">CALIFICACIÓN</div>
     <div style="border:1.5px solid #000;margin:4px 0">
-      <table style="width:100%;border-collapse:collapse;font-size:8.5pt"><tr><td style="border:0.5px solid #000;padding:2px 5px;font-weight:bold;width:35%">SATISFACTORIO</td><td style="border:0.5px solid #000;padding:2px 5px">${(rec.tipo==='BH'||rec.tipo==='SV')?'90 – 100%':'90 – 100%'} del puntaje máximo esperado</td></tr><tr><td style="border:0.5px solid #000;padding:2px 5px;font-weight:bold">POR MEJORAR</td><td style="border:0.5px solid #000;padding:2px 5px">${(rec.tipo==='BH'||rec.tipo==='SV')?'60 – 89%':'75 – 89%'} del puntaje máximo esperado</td></tr><tr><td style="border:0.5px solid #000;padding:2px 5px;font-weight:bold">DEFICIENTE</td><td style="border:0.5px solid #000;padding:2px 5px">${(rec.tipo==='BH'||rec.tipo==='SV')?'&lt;60%':'&lt;75%'} del puntaje máximo esperado</td></tr></table>
+      <table style="width:100%;border-collapse:collapse;font-size:8.5pt"><tr><td style="border:0.5px solid #000;padding:2px 5px;font-weight:bold;width:35%">SATISFACTORIO</td><td style="border:0.5px solid #000;padding:2px 5px">90 – 100% del puntaje máximo esperado</td></tr><tr><td style="border:0.5px solid #000;padding:2px 5px;font-weight:bold">POR MEJORAR</td><td style="border:0.5px solid #000;padding:2px 5px">${(rec.tipo==='BH'||rec.tipo==='SV')?'60 – 89%':'75 – 89%'} del puntaje máximo esperado</td></tr><tr><td style="border:0.5px solid #000;padding:2px 5px;font-weight:bold">DEFICIENTE</td><td style="border:0.5px solid #000;padding:2px 5px">${(rec.tipo==='BH'||rec.tipo==='SV')?'&lt;60%':'&lt;75%'} del puntaje máximo esperado</td></tr></table>
       <div class="${califClass}" style="padding:3px;text-align:center;font-weight:bold;font-size:9pt">${califLabel(calif)} (${pct}%)</div>
     </div>
     <div style="background:#003F87;color:#fff;font-weight:bold;padding:3px 6px;font-size:9pt;margin-top:4px">III. NO CONFORMIDADES IDENTIFICADAS</div>
@@ -1087,7 +1088,7 @@ td,th{border:0.5pt solid #000!important;padding:2px 5px}
 .calif-mejor{background:#FFD966!important;color:#7d5a00!important}
 .calif-defic{background:#FF4C4C!important;color:#fff!important}
 `
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ANEXO ${ANEXO_NUM[rec.tipo]||"5"}</title><style>${css}</style></head><body>${buildAnexo54(rec)}</body></html>`)
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ANEXO ${ANEXO_NUM[rec.tipo]||'5'}</title><style>${css}</style></head><body>${buildAnexo54(rec)}</body></html>`)
   w.document.close()
   w.focus()
   setTimeout(()=>{w.print();setTimeout(()=>w.close(),1000)},600)
@@ -1132,7 +1133,7 @@ function abrirEditar(id){
   document.getElementById('e-comite').value = rec.comite||''
 
   // Build items editor
-  const items = getItemsByTipo(rec.tipo)
+  const items=getItemsByTipo(rec.tipo)
   const secs = [...new Set(items.map(x=>x.sec))]
   const cont = document.getElementById('edit-items-container')
   cont.innerHTML = secs.map(sec=>`
@@ -1179,7 +1180,7 @@ async function guardarEdicion(){
   if(!editingId||!editingRec)return
 
   // Recalculate score with new items
-  const items = getItemsByTipo(editingRec.tipo)
+  const items=getItemsByTipo(editingRec.tipo)
   const maxPts = items.filter(it=>editItemState[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
   const obtPts = items.filter(it=>editItemState[it.id]==='C').reduce((a,b)=>a+b.peso,0)
   const puntaje = maxPts>0?Math.round(obtPts/maxPts*100):0
