@@ -181,11 +181,6 @@ tbody tr:hover td{background:#f9fafb}
             <option>NEUMOLOGÍA</option><option>NEUROLOGÍA</option>
             <option>GASTROENTEROLOGÍA</option><option>DERMATOLOGÍA</option>
             <option>OTORRINOLARINGOLOGÍA</option><option>ONCOLOGÍA</option>
-            <option>EMERGENCIA</option><option>OBSTETRICIA</option>
-            <option>NEONATOLOGÍA</option><option>CARDIOLOGÍA</option>
-            <option>NEUMOLOGÍA</option><option>NEUROLOGÍA</option>
-            <option>GASTROENTEROLOGÍA</option><option>DERMATOLOGÍA</option>
-            <option>OTORRINOLARINGOLOGÍA</option><option>ONCOLOGÍA</option>
           </select>
         </div>
         <div class="fg"><label>Tipo de auditoría *</label>
@@ -283,11 +278,6 @@ tbody tr:hover td{background:#f9fafb}
             <option>OFTALMOLOGÍA</option><option>TRAUMATOLOGÍA</option>
             <option>GINECOLOGÍA</option><option>UROLOGÍA</option>
             <option>MEDICINA INTERNA</option><option>PEDIATRÍA</option>
-            <option>EMERGENCIA</option><option>OBSTETRICIA</option>
-            <option>NEONATOLOGÍA</option><option>CARDIOLOGÍA</option>
-            <option>NEUMOLOGÍA</option><option>NEUROLOGÍA</option>
-            <option>GASTROENTEROLOGÍA</option><option>DERMATOLOGÍA</option>
-            <option>OTORRINOLARINGOLOGÍA</option><option>ONCOLOGÍA</option>
             <option>EMERGENCIA</option><option>OBSTETRICIA</option>
             <option>NEONATOLOGÍA</option><option>CARDIOLOGÍA</option>
             <option>NEUMOLOGÍA</option><option>NEUROLOGÍA</option>
@@ -500,14 +490,13 @@ const ITEMS_CE = [
   {id:'ce_t05',label:'Vía de administración',peso:2,sec:'Tratamiento'},
   {id:'ce_t06',label:'Frecuencia del medicamento',peso:2,sec:'Tratamiento'},
   {id:'ce_t07',label:'Duración del tratamiento',peso:1,sec:'Tratamiento'},
-  {id:'ce_at01',label:'Formatos de Atención Integral por Etapas de Vida (Primer Nivel)',peso:2,sec:'Atributos de la Historia Clínica'},
-  {id:'ce_at02',label:'Pulcritud',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'ce_at03',label:'Letra legible',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'ce_at04',label:'No uso de abreviaturas',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'ce_at05',label:'Sello y firma del médico tratante',peso:2,sec:'Atributos de la Historia Clínica'},
+  {id:'ce_at01',label:'Formatos de Atención Integral por Etapas de Vida',peso:2,sec:'Atributos HC'},
+  {id:'ce_at02',label:'Pulcritud',peso:1,sec:'Atributos HC'},
+  {id:'ce_at03',label:'Letra legible',peso:1,sec:'Atributos HC'},
+  {id:'ce_at04',label:'No uso de abreviaturas',peso:1,sec:'Atributos HC'},
+  {id:'ce_at05',label:'Sello y firma del médico tratante',peso:2,sec:'Atributos HC'},
   {id:'ce_ev01',label:'Seguimiento de la evolución',peso:10,sec:'Seguimiento de la Evolución'},
 ]
-
 const ITEMS_EM = [
   {id:'em_f01',label:'Número de historia clínica',peso:0.5,sec:'Filiación'},
   {id:'em_f02',label:'Nombres y apellidos del paciente',peso:0.5,sec:'Filiación'},
@@ -543,7 +532,6 @@ const ITEMS_EM = [
   {id:'em_p03',label:'Interconsultas pertinentes',peso:3,sec:'Plan de Trabajo'},
   {id:'em_p04',label:'Referencia oportuna',peso:3,sec:'Plan de Trabajo'},
   {id:'em_p05',label:'Procedimientos diagnósticos y/o terapéuticos pertinentes',peso:3,sec:'Plan de Trabajo'},
-  {id:'em_p06',label:'Informes correspondientes al plan de trabajo, anexados a la HC',peso:0,sec:'Plan de Trabajo'},
   {id:'em_p07',label:'Exámenes de laboratorio en historia clínica',peso:0.5,sec:'Plan de Trabajo'},
   {id:'em_p08',label:'Exámenes de imágenes en historia clínica',peso:0.5,sec:'Plan de Trabajo'},
   {id:'em_p09',label:'Respuesta de interconsultas en historia clínica',peso:0.5,sec:'Plan de Trabajo'},
@@ -572,13 +560,12 @@ const ITEMS_EM = [
   {id:'em_re04',label:'Hoja de balance hídrico',peso:0.5,sec:'Registros Obstetricia/Enfermería'},
   {id:'em_re05',label:'Kardex',peso:0.5,sec:'Registros Obstetricia/Enfermería'},
   {id:'em_re06',label:'Firma y sello del profesional',peso:0.5,sec:'Registros Obstetricia/Enfermería'},
-  {id:'em_at01',label:'Firma y sello del médico tratante',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'em_at02',label:'Prioridad de atención',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'em_at03',label:'Pulcritud',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'em_at04',label:'Legibilidad',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'em_at05',label:'No uso de abreviaturas',peso:1,sec:'Atributos de la Historia Clínica'},
+  {id:'em_at01',label:'Firma y sello del médico tratante',peso:1,sec:'Atributos HC'},
+  {id:'em_at02',label:'Prioridad de atención',peso:1,sec:'Atributos HC'},
+  {id:'em_at03',label:'Pulcritud',peso:1,sec:'Atributos HC'},
+  {id:'em_at04',label:'Legibilidad',peso:1,sec:'Atributos HC'},
+  {id:'em_at05',label:'No uso de abreviaturas',peso:1,sec:'Atributos HC'},
 ]
-
 const ITEMS_HO = [
   {id:'ho_f01',label:'Número de historia clínica',peso:0.25,sec:'Filiación'},
   {id:'ho_f02',label:'Nombres y apellidos del paciente',peso:0.25,sec:'Filiación'},
@@ -641,11 +628,11 @@ const ITEMS_HO = [
   {id:'ho_ia01',label:'Informe de alta',peso:1,sec:'Indicaciones de Alta'},
   {id:'ho_ia02',label:'Medicamentos prescritos',peso:1,sec:'Indicaciones de Alta'},
   {id:'ho_ia03',label:'Cuidados generales e indicaciones de reevaluación posterior por consulta externa',peso:1,sec:'Indicaciones de Alta'},
-  {id:'ho_at01',label:'Firma y sello del médico tratante',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'ho_at02',label:'Orden cronológico de las hojas de la historia clínica',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'ho_at03',label:'Pulcritud',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'ho_at04',label:'Legibilidad',peso:1,sec:'Atributos de la Historia Clínica'},
-  {id:'ho_at05',label:'No uso de abreviaturas',peso:1,sec:'Atributos de la Historia Clínica'},
+  {id:'ho_at01',label:'Firma y sello del médico tratante',peso:1,sec:'Atributos HC'},
+  {id:'ho_at02',label:'Orden cronológico de las hojas de la historia clínica',peso:1,sec:'Atributos HC'},
+  {id:'ho_at03',label:'Pulcritud',peso:1,sec:'Atributos HC'},
+  {id:'ho_at04',label:'Legibilidad',peso:1,sec:'Atributos HC'},
+  {id:'ho_at05',label:'No uso de abreviaturas',peso:1,sec:'Atributos HC'},
   {id:'ho_fe01',label:'Formato de interconsulta',peso:0.5,sec:'Formatos Especiales'},
   {id:'ho_fe02',label:'Formato de orden de intervención quirúrgica',peso:0.5,sec:'Formatos Especiales'},
   {id:'ho_fe03',label:'Reporte operatorio',peso:0.5,sec:'Formatos Especiales'},
@@ -653,13 +640,12 @@ const ITEMS_HO = [
   {id:'ho_fe05',label:'Lista de verificación de seguridad de la cirugía',peso:1,sec:'Formatos Especiales'},
   {id:'ho_fe06',label:'Hoja de anestesia',peso:0.5,sec:'Formatos Especiales'},
   {id:'ho_fe07',label:'Hoja post anestésica',peso:0.5,sec:'Formatos Especiales'},
-  {id:'ho_fe08',label:'Formatos de patología clínica, formato de diagnóstico por imágenes',peso:0.5,sec:'Formatos Especiales'},
+  {id:'ho_fe08',label:'Formatos de patología clínica / diagnóstico por imágenes',peso:0.5,sec:'Formatos Especiales'},
   {id:'ho_fe09',label:'Formato de anatomía patológica',peso:0.5,sec:'Formatos Especiales'},
   {id:'ho_fe10',label:'Formato de consentimiento informado',peso:1,sec:'Formatos Especiales'},
   {id:'ho_fe11',label:'Formato de retiro voluntario',peso:0.5,sec:'Formatos Especiales'},
   {id:'ho_fe12',label:'Epicrisis',peso:1,sec:'Formatos Especiales'},
 ]
-
 const ITEMS_BH = [
   {id:'bh_f01',label:'Nombres y apellidos',peso:2,sec:'Datos de Filiación'},
   {id:'bh_f02',label:'Tipo y N° seguro',peso:1,sec:'Datos de Filiación'},
@@ -686,7 +672,6 @@ const ITEMS_BH = [
   {id:'bh_q03',label:'Firma y sello del enfermero u obstetra',peso:4,sec:'Calidad del Registro'},
   {id:'bh_q04',label:'Uso de lapicero de color oficial (azul y rojo)',peso:2,sec:'Calidad del Registro'},
 ]
-
 const ITEMS_SV = [
   {id:'sv_f01',label:'Nombres y apellidos',peso:2,sec:'Datos de Filiación'},
   {id:'sv_f02',label:'Tipo y N° seguro, registro',peso:1,sec:'Datos de Filiación'},
@@ -723,12 +708,11 @@ const MESES = {'01':'Enero','02':'Febrero','03':'Marzo','04':'Abril','05':'Mayo'
 
 let sb, currentUser=null, allData=[], charts={}, itemState={}
 
-function getItemsByTipo(tipo){
-  const map={CI:ITEMS_CI,CQ:ITEMS_CQ,CE:ITEMS_CE,EM:ITEMS_EM,HO:ITEMS_HO,BH:ITEMS_BH,SV:ITEMS_SV}
-  return map[tipo]||[]
+function getItemsByTipo(t){
+  return {CI:ITEMS_CI,CQ:ITEMS_CQ,CE:ITEMS_CE,EM:ITEMS_EM,HO:ITEMS_HO,BH:ITEMS_BH,SV:ITEMS_SV}[t]||[]
 }
-function calcCalifByTipo(pct,tipo){
-  if(tipo==='BH'||tipo==='SV') return pct>=90?'S':pct>=60?'P':'D'
+function calcCalifByTipo(pct,t){
+  if(t==='BH'||t==='SV') return pct>=90?'S':pct>=60?'P':'D'
   return pct>=90?'S':pct>=75?'P':'D'
 }
 function toast(msg,dur=2800){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',dur)}
@@ -840,7 +824,7 @@ function renderItems(){
   document.getElementById('score-live').style.display = tipo?'flex':'none'
   document.getElementById('btn-imprimir').style.display = 'none'
   if(!tipo){cont.innerHTML='';itemState={};return}
-  const items=getItemsByTipo(tipo)
+  const items = getItemsByTipo(tipo)
   itemState={}
   items.forEach(it=>itemState[it.id]='C')
   const secs=[...new Set(items.map(x=>x.sec))]
@@ -1184,7 +1168,7 @@ async function guardarEdicion(){
   const maxPts = items.filter(it=>editItemState[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
   const obtPts = items.filter(it=>editItemState[it.id]==='C').reduce((a,b)=>a+b.peso,0)
   const puntaje = maxPts>0?Math.round(obtPts/maxPts*100):0
-  const calif = calcCalifByTipo(puntaje, editingRec.tipo)
+  const calif=calcCalifByTipo(puntaje,editingRec.tipo)
 
   const updates = {
     hc: document.getElementById('e-hc').value.trim(),
