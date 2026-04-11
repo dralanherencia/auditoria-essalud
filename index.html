@@ -169,6 +169,27 @@ tbody tr:hover td{background:#f9fafb}
         <div class="fg"><label>N° Historia Clínica *</label><input id="f-hc" type="text" placeholder="79728"></div>
         <div class="fg"><label>Fecha de atención (de la HC) *</label><input id="f-fecha" type="date"></div>
         <div class="fg"><label>Fecha de registro (hoy) *</label><input id="f-fecha-reg" type="date"></div>
+        <div class="fg"><label>IPRESS *</label>
+          <select id="f-ipress">
+            <option value="">Seleccionar IPRESS...</option>
+            <option>HOSPITAL III JULIACA</option>
+            <option>POLICLÍNICO JULIACA</option>
+            <option>CAP III ENCINAS</option>
+            <option>HOSPITAL I LAMPA</option>
+            <option>CENTRO MÉDICO AYAVIRI</option>
+            <option>POLICLÍNICO AZÁNGARO</option>
+            <option>POSTA MÉDICA HUANCANÉ</option>
+            <option>POSTA MÉDICA SAN RAFAEL</option>
+            <option>POSTA MÉDICA SAN GABÁN - MACUSANI</option>
+            <option>POSTA MÉDICA SANDIA</option>
+            <option>POSTA MÉDICA ASILLO</option>
+            <option>CAP II CABANILLAS</option>
+            <option>MAIS</option>
+            <option>OSPE</option>
+            <option>GERENCIA ADMINISTRATIVA</option>
+            <option>CAMEC</option>
+          </select>
+        </div>
         <div class="fg"><label>Servicio auditado *</label>
           <select id="f-servicio">
             <option value="">Seleccionar...</option>
@@ -227,13 +248,29 @@ tbody tr:hover td{background:#f9fafb}
     </div>
     <div class="filter-row">
       <select id="fm-mes"><option value="">Todos los meses</option></select>
+      <select id="fm-ipress"><option value="">Todas las IPRESS</option>
+      <option>HOSPITAL III JULIACA</option>
+      <option>POLICLÍNICO JULIACA</option>
+      <option>CAP III ENCINAS</option>
+      <option>HOSPITAL I LAMPA</option>
+      <option>CENTRO MÉDICO AYAVIRI</option>
+      <option>POLICLÍNICO AZÁNGARO</option>
+      <option>POSTA MÉDICA HUANCANÉ</option>
+      <option>POSTA MÉDICA SAN RAFAEL</option>
+      <option>POSTA MÉDICA SAN GABÁN - MACUSANI</option>
+      <option>POSTA MÉDICA SANDIA</option>
+      <option>POSTA MÉDICA ASILLO</option>
+      <option>CAP II CABANILLAS</option>
+      <option>MAIS</option><option>OSPE</option>
+      <option>GERENCIA ADMINISTRATIVA</option>
+      <option>CAMEC</option></select>
       <select id="fm-tipo"><option value="">Todos los tipos</option><option value="CE">Consulta Externa</option><option value="EM">Emergencia</option><option value="HO">Hospitalización</option><option value="CQ">Centro Quirúrgico</option><option value="CI">Consentimiento Informado</option><option value="BH">Balance Hídrico</option><option value="SV">Signos Vitales</option></select>
       <select id="fm-calif"><option value="">Todas</option><option value="S">Satisfactorio</option><option value="P">Por mejorar</option><option value="D">Deficiente</option></select>
       <input id="fm-hc" type="text" placeholder="Buscar HC..." style="width:120px">
       <button class="btn btn-s btn-sm" id="btn-filtrar">Filtrar</button>
     </div>
     <div class="card" style="padding:.5rem;overflow-x:auto">
-      <table><thead><tr><th>HC</th><th>F. Atención</th><th>F. Registro</th><th>Servicio</th><th>Tipo</th><th>Puntaje</th><th>Calif.</th><th>Acciones</th></tr></thead>
+      <table><thead><tr><th>HC</th><th>F. Atención</th><th>IPRESS</th><th>Servicio</th><th>Tipo</th><th>Puntaje</th><th>Calif.</th><th>Acciones</th></tr></thead>
       <tbody id="tbody-matriz"></tbody></table>
     </div>
   </div>
@@ -272,6 +309,27 @@ tbody tr:hover td{background:#f9fafb}
         <div class="fg"><label>N° Historia Clínica</label><input id="e-hc" type="text"></div>
         <div class="fg"><label>Fecha de atención</label><input id="e-fecha" type="date"></div>
         <div class="fg"><label>Fecha de registro</label><input id="e-fecha-reg" type="date"></div>
+        <div class="fg"><label>IPRESS</label>
+          <select id="e-ipress">
+            <option value="">Seleccionar IPRESS...</option>
+            <option>HOSPITAL III JULIACA</option>
+            <option>POLICLÍNICO JULIACA</option>
+            <option>CAP III ENCINAS</option>
+            <option>HOSPITAL I LAMPA</option>
+            <option>CENTRO MÉDICO AYAVIRI</option>
+            <option>POLICLÍNICO AZÁNGARO</option>
+            <option>POSTA MÉDICA HUANCANÉ</option>
+            <option>POSTA MÉDICA SAN RAFAEL</option>
+            <option>POSTA MÉDICA SAN GABÁN - MACUSANI</option>
+            <option>POSTA MÉDICA SANDIA</option>
+            <option>POSTA MÉDICA ASILLO</option>
+            <option>CAP II CABANILLAS</option>
+            <option>MAIS</option>
+            <option>OSPE</option>
+            <option>GERENCIA ADMINISTRATIVA</option>
+            <option>CAMEC</option>
+          </select>
+        </div>
         <div class="fg"><label>Servicio auditado</label>
           <select id="e-servicio">
             <option>ANESTESIOLOGÍA</option><option>CIRUGÍA GENERAL</option>
@@ -881,14 +939,16 @@ async function guardar(){
   const fecha=document.getElementById('f-fecha').value
   const servicio=document.getElementById('f-servicio').value
   const tipo=document.getElementById('f-tipo').value
-  if(!hc||!fecha||!servicio||!tipo){toast('Completar: HC, fecha, servicio y tipo.');return}
+  const ipress_val=document.getElementById('f-ipress').value
+  if(!hc||!fecha||!ipress_val||!servicio||!tipo){toast('Completar: HC, fecha, IPRESS, servicio y tipo.');return}
   const items=getItemsByTipo(tipo)
   const maxPts=items.filter(it=>itemState[it.id]!=='NA').reduce((a,b)=>a+b.peso,0)
   const obtPts=items.filter(it=>itemState[it.id]==='C').reduce((a,b)=>a+b.peso,0)
   const puntaje=maxPts>0?Math.round(obtPts/maxPts*100):0
   const calif=calcCalifByTipo(puntaje,tipo)
   const fechaReg = document.getElementById('f-fecha-reg').value || new Date().toISOString().split('T')[0]
-  const row={hc,fecha,servicio,tipo,puntaje,calif,
+  const ipress=document.getElementById('f-ipress').value
+  const row={hc,fecha,servicio,tipo,puntaje,calif,ipress,
     cole:document.getElementById('f-cole').value.trim(),
     dx:document.getElementById('f-dx').value.trim(),
     naud:document.getElementById('f-naud').value.trim(),
@@ -917,6 +977,7 @@ function limpiar(){
   ['f-hc','f-cole','f-dx','f-naud','f-comite'].forEach(id=>document.getElementById(id).value='')
   document.getElementById('f-fecha-reg').value=new Date().toISOString().split('T')[0]
   document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0]
+  document.getElementById('f-ipress').selectedIndex=0
   document.getElementById('f-servicio').selectedIndex=0
   document.getElementById('f-tipo').selectedIndex=0
   document.getElementById('items-container').innerHTML=''
@@ -930,7 +991,9 @@ function loadMatriz(){
   const tipo=document.getElementById('fm-tipo').value
   const calif=document.getElementById('fm-calif').value
   const hcQ=document.getElementById('fm-hc').value.trim().toLowerCase()
+  const ipress=document.getElementById('fm-ipress').value
   let data=allData
+  if(ipress)data=data.filter(d=>d.ipress===ipress)
   if(mes)data=data.filter(d=>d.mes===mes)
   if(tipo)data=data.filter(d=>d.tipo===tipo)
   if(calif)data=data.filter(d=>d.calif===calif)
@@ -939,6 +1002,7 @@ function loadMatriz(){
     <tr>
       <td style="font-weight:500">${d.hc}</td>
       <td>${d.fecha}</td>
+      <td style="font-size:10px">${d.ipress||'—'}</td>
       <td style="font-size:11px">${d.servicio||'—'}</td>
       <td style="font-size:10px">${TIPO_LABEL[d.tipo]||d.tipo}</td>
       <td><span class="dot ${dotClass(d.puntaje)}" style="margin-right:4px"></span>${d.puntaje}/100</td>
@@ -948,7 +1012,7 @@ function loadMatriz(){
         <button class="btn btn-print btn-sm" data-id="${d.id}">PDF</button>
         ${isAdmin()?`<button class="btn btn-s btn-sm" data-edit="${d.id}">Editar</button><button class="btn btn-danger btn-sm" data-del="${d.id}">✕</button>`:''}
       </td>
-    </tr>`).join('')||'<tr><td colspan="7" style="text-align:center;color:#6b7280;padding:1rem">Sin registros</td></tr>'
+    </tr>`).join('')||'<tr><td colspan="8" style="text-align:center;color:#6b7280;padding:1rem">Sin registros</td></tr>'
   document.querySelectorAll('[data-id]').forEach(btn=>btn.addEventListener('click',()=>imprimirRegistro(btn.dataset.id)))
   document.querySelectorAll('[data-del]').forEach(btn=>btn.addEventListener('click',()=>eliminar(btn.dataset.del)))
   document.querySelectorAll('[data-edit]').forEach(btn=>btn.addEventListener('click',()=>abrirEditar(btn.dataset.edit)))
@@ -1027,7 +1091,8 @@ function buildAnexo54(rec){
     </div>
     <div style="background:#003F87;color:#fff;font-weight:bold;padding:3px 6px;font-size:9pt">I. DATOS GENERALES DE LA AUDITORÍA</div>
     <table style="width:100%;border-collapse:collapse;font-size:8.5pt">
-      <tr><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87;width:30%">Miembros del comité de auditoría</td><td style="border:0.5px solid #000;padding:2px 5px">${rec.comite||'—'}</td><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87;width:30%">Número de auditoría</td><td style="border:0.5px solid #000;padding:2px 5px">${rec.naud||'—'}</td></tr>
+      <tr><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87;width:30%">IPRESS</td><td colspan="3" style="border:0.5px solid #000;padding:2px 5px">${rec.ipress||'—'}</td></tr>
+    <tr><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87;width:30%">Miembros del comité de auditoría</td><td style="border:0.5px solid #000;padding:2px 5px">${rec.comite||'—'}</td><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87;width:30%">Número de auditoría</td><td style="border:0.5px solid #000;padding:2px 5px">${rec.naud||'—'}</td></tr>
       <tr><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87">Fecha de auditoría</td><td style="border:0.5px solid #000;padding:2px 5px">${rec.created_at?rec.created_at.substring(0,10):''}</td><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87">Servicio auditado</td><td style="border:0.5px solid #000;padding:2px 5px">${rec.servicio||'—'}</td></tr>
       <tr><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87">Fecha de atención brindada</td><td style="border:0.5px solid #000;padding:2px 5px">${rec.fecha||'—'}</td><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87">Tipo de auditoría</td><td style="border:0.5px solid #000;padding:2px 5px">${TIPO_LABEL[rec.tipo]||rec.tipo}</td></tr>
       <tr><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87">Número de la historia clínica</td><td style="border:0.5px solid #000;padding:2px 5px">${rec.hc||'—'}</td><td style="border:0.5px solid #000;padding:2px 5px;background:#BDD7EE;font-weight:bold;color:#003F87">Colegiatura del médico tratante</td><td style="border:0.5px solid #000;padding:2px 5px">${rec.cole||'—'}</td></tr>
@@ -1107,6 +1172,7 @@ function abrirEditar(id){
   editItemState = rec.items ? {...rec.items} : {}
 
   // Fill datos generales
+  document.getElementById('e-ipress').value = rec.ipress||''
   document.getElementById('e-hc').value = rec.hc||''
   document.getElementById('e-fecha').value = rec.fecha||''
   document.getElementById('e-fecha-reg').value = rec.fecha_registro||rec.fecha||''
@@ -1171,6 +1237,7 @@ async function guardarEdicion(){
   const calif=calcCalifByTipo(puntaje,editingRec.tipo)
 
   const updates = {
+    ipress: document.getElementById('e-ipress').value,
     hc: document.getElementById('e-hc').value.trim(),
     fecha: document.getElementById('e-fecha').value,
     fecha_registro: document.getElementById('e-fecha-reg').value,
@@ -1187,7 +1254,7 @@ async function guardarEdicion(){
 
   // Build log entry — track what changed
   const changed = []
-  const camposLabel = {hc:'HC',fecha:'Fecha atención',fecha_registro:'Fecha registro',servicio:'Servicio',cole:'Colegiatura',dx:'Diagnóstico',naud:'N° Auditoría',comite:'Comité'}
+  const camposLabel = {ipress:'IPRESS',hc:'HC',fecha:'Fecha atención',fecha_registro:'Fecha registro',servicio:'Servicio',cole:'Colegiatura',dx:'Diagnóstico',naud:'N° Auditoría',comite:'Comité'}
   Object.entries(camposLabel).forEach(([k,label])=>{
     if(String(editingRec[k]||'') !== String(updates[k]||''))
       changed.push({campo:label, anterior:editingRec[k]||'', nuevo:updates[k]||''})
@@ -1244,7 +1311,7 @@ async function loadLog(){
       <td style="font-size:11px">${r.campo||'—'}</td>
       <td style="font-size:11px;color:#8b1a1a">${r.valor_anterior||'—'}</td>
       <td style="font-size:11px;color:#2e6e0e">${r.valor_nuevo||'—'}</td>
-    </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:#6b7280;padding:1rem">Sin registros en el log</td></tr>'
+    </tr>`).join('') : '<tr><td colspan="8" style="text-align:center;color:#6b7280;padding:1rem">Sin registros en el log</td></tr>'
 }
 
 
