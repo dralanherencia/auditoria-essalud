@@ -1557,8 +1557,22 @@ function buildAnexo54(rec){
 }
 
 function _descargarWordFromHtml(bodyHtml, hc){
-  const css=`body{font-family:Arial,sans-serif;font-size:8.5pt}table{border-collapse:collapse;width:100%}td,th{border:0.5pt solid #000;padding:1px 4px;font-size:8pt}.calif-satisf{background:#70AD47;color:#fff}.calif-mejor{background:#FFD966;color:#7d5a00}.calif-defic{background:#FF4C4C;color:#fff}`
-  const doc=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='UTF-8'><style>${css}@page Section1{size:21cm 29.7cm;margin:1.5cm}div.Section1{page:Section1}</style></head><body><div class="Section1">${bodyHtml}</div></body></html>`
+  // Fijar tamaño de firma (Word ignora object-fit y max-width en img)
+  bodyHtml = bodyHtml.replace(/(<img[^>]+style=")[^"]*(")/g,
+    '$1width:38mm;height:auto;display:block;margin:0 auto$2')
+  // Convertir flex a table para compatibilidad con Word
+  bodyHtml = bodyHtml.replace(/display:flex;gap:14px;margin-top:6mm/g,
+    'display:table;width:100%;margin-top:4mm')
+  bodyHtml = bodyHtml.replace(/flex:1;text-align:center/g,
+    'display:table-cell;text-align:center;width:33%')
+  const css=`body{font-family:Arial,sans-serif;font-size:8pt}
+table{border-collapse:collapse;width:100%}
+td,th{border:0.5pt solid #000;padding:1px 3px;font-size:7.5pt}
+img{width:38mm;height:auto}
+.calif-satisf{background:#70AD47;color:#fff}
+.calif-mejor{background:#FFD966;color:#7d5a00}
+.calif-defic{background:#FF4C4C;color:#fff}`
+  const doc=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='UTF-8'><style>${css}@page Section1{size:21cm 29.7cm;margin:1cm 1.2cm}div.Section1{page:Section1}</style></head><body><div class="Section1">${bodyHtml}</div></body></html>`
   const blob=new Blob(['﻿',doc],{type:'application/msword'})
   const url=URL.createObjectURL(blob)
   const a=document.createElement('a');a.href=url;a.download=`auditoria_${hc||'doc'}.doc`
